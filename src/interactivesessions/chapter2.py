@@ -1,8 +1,8 @@
 """
->>> print "hi"
-hi2
->>> print "hi3"
-hi3
+>>> import maya.cmds as cmds
+>>> mynode = cmds.transform()
+>>> cmds.listConnections(mynode, type='transform')
+
 """
 
 if __name__ == "__main__":
