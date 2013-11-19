@@ -1,59 +1,67 @@
 # Version 1
 
-def convert_to_skeleton(rootnode, prefix='skel_'):
+def convert_to_skeleton(rootnode, prefix='skel_', _parent=None):
     """Converts a hierarchy of nodes into joints that have the
-    same transform, with their name prefixed with 'prefix'.
+    same transform, with their name prefixed with `prefix`.
     Return the newly created root node.
+    The new hierarchy will share the same parent as rootnode.
 
     :param rootnode: The root PyNode.
       Everything under it will be converted.
     :param prefix: String to prefix newly created nodes with.
     """
-    # For each node starting at the root,
-    # convert it, convert the children,
-    # and parent the children to the node.
-    # Function will probably be recursive.
+    # Create a joint from the given node with the new name.
+    # Copy the transform and rotation.
+    # Set the parent to rootnode's parent if _parent is None,
+    # Otherwise set it to _parent.
+    # Convert all the children recursively.
+
 
 
 # Version 2
 
-import pymel.core as pmc
-
-
-def convert_to_skeleton(rootnode, prefix='skel_'):
+def convert_to_skeleton(rootnode, prefix='skel_', _parent=None):
     """Converts a hierarchy of nodes into joints that have the
-    same transform, with their name prefixed with 'prefix'.
+    same transform, with their name prefixed with `prefix`.
     Return the newly created root node.
+    The new hierarchy will share the same parent as rootnode.
 
     :param rootnode: The root PyNode.
       Everything under it will be converted.
     :param prefix: String to prefix newly created nodes with.
     """
+    # Create a joint from the given node with the new name.
     j = pmc.joint(name=prefix + rootnode.name())
-    j.setParent(rootnode.getParent())
+    # Copy the transform and rotation.
     j.translation.set(rootnode.translation.get())
     j.rotation.set(rootnode.rotation.get())
+    # Set the parent to rootnode's parent if _parent is None,
+    # Otherwise set it to _parent.
+    if _parent is None:
+        _parent = rootnode.getParent()
+    j.setParent(_parent)
+    # Convert all the children recursively.
     for c in rootnode.children():
-        convert_to_skeleton(c, prefix)
+        convert_to_skeleton(c, prefix, j)
     return j
+
 
 
 # Version 3
 
 def safeSetParent(node, parent):
-    """'node.setParent(parent)' if 'parent' is
-    not the same as 'node''s existing parent.
+    """`node.setParent(parent)` if `parent` is
+    not the same as `node`'s existing parent.
     """
     if node.getParent() != parent:
         node.setParent(parent)
 
-
 def convert_to_skeleton(rootnode, prefix='skel_'):
     j = pmc.joint(name=prefix + rootnode.name())
     safeSetParent(j, rootnode.getParent())
-    j.translate.set(rootnode.translation.get())
-    j.rotate.set(rootnode.rotation.get())
-    for c in rootnode.getChildren():
+    j.translation.set(rootnode.translation.get())
+    j.rotation.set(rootnode.rotation.get())
+    for c in rootnode.children():
         convert_to_skeleton(c, prefix)
     return j
 
@@ -61,10 +69,9 @@ def convert_to_skeleton(rootnode, prefix='skel_'):
 
 def _convert_to_joint(node, prefix):
     j = pmc.joint(name=prefix + node.name())
-    j.translation.set(node.translate.get())
-    j.rotation.set(node.rotate.get())
+    j.translation.set(node.translation.get())
+    j.rotation.set(node.rotation.get())
     return j
-
 
 def convert_to_skeleton(rootnode, prefix='skel_'):
     j = _convert_to_joint(rootnode, prefix)
@@ -73,8 +80,11 @@ def convert_to_skeleton(rootnode, prefix='skel_'):
         convert_to_skeleton(c, prefix)
     return j
 
-
 # Version 5
+
+GREEN = 1
+BLUE = 2
+YELLOW = 3
 
 def _convert_to_joint(node, prefix):
     j = pmc.joint(name=prefix + node.name())
@@ -82,11 +92,11 @@ def _convert_to_joint(node, prefix):
     j.rotation.set(node.rotation.get())
     x = j.translate.x.get()
     if x < 0.001:
-        col = (0, 255, 0)
+        col = GREEN
     elif x > 0.001:
-        col = (0, 0, 255)
+        col = BLUE
     else:
-        col = (0, 255, 255)
+        col = YELLOW
     j.wireColor.set(col)
     return j
 
@@ -96,42 +106,37 @@ def _convert_to_joint(node, prefix):
     j = pmc.joint(name=prefix + node.name())
     j.translation.set(node.translation.get())
     j.rotation.set(node.rotation.get())
-
     def calc_wirecolor():
         x = j.translate.x.get()
         if x < 0.001:
-            return 0, 255, 0
+            return GREEN
         elif x > 0.001:
-            return 0, 0, 255
+            return BLUE
         else:
-            return 0, 255, 255
-
+            return YELLOW
     j.wireColor.set(calc_wirecolor())
     return j
 
-# Version 7
+# Verison 7
 
 def _convert_to_joint(node, prefix):
     j = pmc.joint(name=prefix + node.name())
     j.translation.set(node.translation.get())
     j.rotation.set(node.rotation.get())
-
     def calc_wirecolor():
         x = j.translate.x.get()
         if x < 0.001:
-            return 0, 255, 0
+            return GREEN
         elif x > 0.001:
-            return 0, 0, 255
+            return BLUE
         else:
-            return 0, 255, 255
-
+            return YELLOW
     j.wireColor.set(calc_wirecolor())
     return j
 
-
 def convert_to_skeleton(rootnode, prefix='skel_'):
     """Converts a hierarchy of nodes into joints that have the
-    same transform, with their name prefixed with 'prefix'.
+    same transform, with their name prefixed with `prefix`.
     Return the newly created root node.
 
     :param rootnode: The root PyNode.
@@ -145,45 +150,40 @@ def convert_to_skeleton(rootnode, prefix='skel_'):
         convert_to_skeleton(c, prefix)
     return j
 
-# Version 7
-
 def ancestors(node):
     """Return a list of ancestors, starting with the direct parent
     and ending with the top-level (root) parent."""
-
-    ancestors = []
+    result = []
     parent = node.getParent()
     while parent is not None:
-        ancestors.append(parent)
-        parent = node.getParent()
-    return ancestors
+        result.append(parent)
+        parent = parent.getParent()
+    return result
 
-# Version 8
 
-def trueroots(nodes):
-    """Returns a list of the nodes in 'nodes' that are not
-    children of any node in 'nodes'."""
+def uniqueroots(nodes): #(1)
+    """Returns a list of the nodes in `nodes` that are not
+    children of any node in `nodes`."""
     result = []
-
-    def handle_node(n):
+    def handle_node(n): #(2)
         """If any of the ancestors of n are in realroots,
         just return, otherwise, append n to realroots.
         """
         for ancestor in ancestors(n):
-            if ancestor in result:
+            if ancestor in nodes: #(4)
                 return
-        result.append(n)
-
-    for node in nodes:
+        result.append(n) #(5)
+    for node in nodes: #(3)
         handle_node(node)
+    return result
 
-# Version 9
+# VERSION
 
-def _convert_to_joint(node, prefix, lcol, rcol, ccol):
+def _convert_to_joint(node, prefix , jnt_size, lcol, rcol, ccol):
     j = pmc.joint(name=prefix + node.name())
     j.translation.set(node.translation.get())
     j.rotation.set(node.rotation.get())
-
+    j.setJointSize(jnt_size)
     def calc_wirecolor():
         x = j.translate.x.get()
         if x < -0.001:
@@ -192,18 +192,20 @@ def _convert_to_joint(node, prefix, lcol, rcol, ccol):
             return lcol
         else:
             return ccol
-
-    j.wireColor.set(calc_wirecolor())
+    j.overrideColor.set(calc_wirecolor())
     return j
 
-
-def convert_to_skeleton(rootnode,
-                        prefix='skel_',
-                        lcol=(0, 0, 255),
-                        rcol=(0, 255, 0),
-                        ccol=(0, 255, 255)):
-    j = _convert_to_joint(rootnode, prefix, lcol, rcol, ccol)
+def convert_to_skeleton(
+        rootnode,
+        prefix='skel_',
+        joint_size=1.0,
+        lcol=BLUE,
+        rcol=GREEN,
+        ccol=YELLOW):
+    j = _convert_to_joint(
+        rootnode, prefix, joint_size, lcol, rcol, ccol)
     safeSetParent(j, rootnode.getParent())
     for c in rootnode.children():
-        convert_to_skeleton(c, prefix, lcol, rcol, ccol)
+        convert_to_skeleton(
+            c, prefix, joint_size, lcol, rcol, ccol)
     return j
