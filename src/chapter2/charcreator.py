@@ -36,19 +36,25 @@ def convert_hierarchy(node):
 
 
 # (1)
+GREEN = 14
+BLUE = 6
+YELLOW = 17
+PURPLE = 8
+AQUA = 28
+
 SETTINGS_DEFAULT = {
     'joint_size': 1.0,
-    'right_color': (0, 255, 0),
-    'left_color': (0, 0, 255),
-    'center_color': (0, 255, 255),
+    'right_color': BLUE,
+    'left_color': GREEN,
+    'center_color': YELLOW,
     'prefix': 'char_',
 }
 SETTINGS_GAME2 = {
     'joint_size': 25.0,
-    'right_color': (255, 0, 0),
-    'left_color': (0, 0, 0),
-    'center_color': (255, 255, 0),
-    'prefix': 'gamechar_',
+    'right_color': PURPLE,
+    'left_color': AQUA,
+    'center_color': GREEN,
+    'prefix': 'game2char_',
 }
 
 #(2)
@@ -70,7 +76,7 @@ def convert_hierarchies(rootnodes, settings=SETTINGS_DEFAULT):
 def convert_hierarchy(rootnode,  settings=SETTINGS_DEFAULT):
     result = skeletonutils.convert_to_skeleton( #(3)
         rootnode,
-        jointsize=settings['joint_size'],
+        joint_size=settings['joint_size'],
         prefix=settings['prefix'],
         rcol=settings['right_color'],
         lcol=settings['left_color'],
