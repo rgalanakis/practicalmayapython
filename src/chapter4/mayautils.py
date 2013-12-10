@@ -201,6 +201,18 @@ class Tests(unittest.TestCase):
             self.assertEqual(':', pmc.namespaceInfo(cur=True))
         self.assertEqual('before', pmc.namespaceInfo(cur=True))
 
+    def testSetRenderLayer(self):
+        cam1 = pmc.camera()[0]
+        defaultlayer = pmc.nodetypes.RenderLayer.defaultRenderLayer()
+        newlayer = pmc.createRenderLayer()
+        defaultlayer.setCurrent()
+        with render_layer_active(newlayer):
+            cam2 = pmc.camera()[0]
+            self.assertEqual(pmc.nodetypes.RenderLayer.currentLayer(), newlayer)
+        self.assertEqual(pmc.nodetypes.RenderLayer.currentLayer(), defaultlayer)
+        self.assertTrue(defaultlayer.inLayer(cam1))
+        self.assertTrue(newlayer.inLayer(cam2))
+
 
 if __name__ == '__main__':
     unittest.main()

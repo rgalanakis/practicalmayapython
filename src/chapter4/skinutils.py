@@ -46,7 +46,16 @@ class denormalized_skin_2(object):
 
 denormalized_skin = denormalized_skin_2
 
-def swap_influence(skinCl, vert, inflA, inflB):
+def swap_influence_1(skinCl, vert, inflA, inflB):
+    """For a given vertex,
+    swaps the weight between two influences."""
+    valA = pmc.skinPercent(skinCl, vert, q=True, t=inflA)
+    valB = pmc.skinPercent(skinCl, vert, q=True, t=inflB)
+    with denormalized_skin(skinCl):
+        pmc.skinPercent(skinCl, vert, tv=[inflA, valB])
+        pmc.skinPercent(skinCl, vert, tv=[inflB, valA])
+
+def swap_influence_2(skinCl, vert, inflA, inflB):
     """For a given vertex,
     swaps the weight between two influences."""
     with denormalized_skin(skinCl):
@@ -72,7 +81,7 @@ class Tests(unittest.TestCase):
                 if pmc.objExists(o):
                     pmc.delete(o)
 
-    def _testSwap(self, func):
+    def _testSwap(self, func, swap):
         global denormalized_skin
         denormalized_skin = func
         joints = [
@@ -86,15 +95,18 @@ class Tests(unittest.TestCase):
             return pmc.skinPercent(cl, plane.vtx[0], q=True, t=joints[ind])
         self.assertEqual(getweight(0), 0.0)
         self.assertEqual(getweight(1), 0.5)
-        swap_influence(cl, plane.vtx[0], joints[0], joints[1])
+        swap(cl, plane.vtx[0], joints[0], joints[1])
         self.assertEqual(getweight(0), 0.5)
         self.assertEqual(getweight(1), 0.0)
 
-    def testSwap1(self):
-        self._testSwap(denormalized_skin_1)
+    def testDenorm1Swap1(self):
+        self._testSwap(denormalized_skin_1, swap_influence_1)
 
-    def testSwap2(self):
-        self._testSwap(denormalized_skin_2)
+    def testDenorm1Swap2(self):
+        self._testSwap(denormalized_skin_1, swap_influence_2)
+
+    def testDenorm2Swap2(self):
+        self._testSwap(denormalized_skin_2, swap_influence_2)
 
 
 if __name__ == '__main__':
