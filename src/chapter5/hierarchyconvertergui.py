@@ -1,11 +1,11 @@
-from PySide import QtGui, QtCore
+from uiutils import QtGui, QtCore, Signal
 
 
 class HierarchyConverterController(QtCore.QObject):
-    selectionChanged = QtCore.Signal(list)
+    selectionChanged = Signal(list)
 
 class ConverterWindow(QtGui.QMainWindow):
-    convertClicked = QtCore.Signal(str)
+    convertClicked = Signal(str)
 
 def create_window(controller, parent=None):
     window = ConverterWindow(parent)

@@ -1,4 +1,4 @@
-from PySide import QtGui, QtCore
+from uiutils import QtGui, QtCore, Signal
 
 
 def version1():
@@ -75,7 +75,7 @@ def version4():
     """Adds convertClicked signal and support."""
 
     class ConverterWindow(QtGui.QMainWindow):
-        convertClicked = QtCore.Signal(str)
+        convertClicked = Signal(str)
 
     def create_window():
         window = ConverterWindow()
@@ -113,10 +113,10 @@ def version5():
     """Adds selection changed handling, controller, and status bar."""
 
     class HierarchyConverterController(QtCore.QObject):
-        selectionChanged = QtCore.Signal(list)
+        selectionChanged = Signal(list)
 
     class ConverterWindow(QtGui.QMainWindow):
-        convertClicked = QtCore.Signal(str)
+        convertClicked = Signal(str)
 
     def create_window(controller):
         window = ConverterWindow()
@@ -180,10 +180,10 @@ def version6():
     """Adds parent support."""
 
     class HierarchyConverterController(QtCore.QObject):
-        selectionChanged = QtCore.Signal(list)
+        selectionChanged = Signal(list)
 
     class ConverterWindow(QtGui.QMainWindow):
-        convertClicked = QtCore.Signal(str)
+        convertClicked = Signal(str)
 
     def create_window(controller, parent=None):
         window = ConverterWindow(parent)
