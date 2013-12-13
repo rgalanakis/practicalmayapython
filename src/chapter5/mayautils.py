@@ -1,6 +1,7 @@
 from uiutils import QtCore, QtGui, wrapinstance
 
 import maya.OpenMayaUI as OpenMayaUI
+import pymel.core as pmc
 
 
 def get_maya_window():
@@ -26,3 +27,8 @@ def uipath_to_qtobject(pathstr):
         ptr = OpenMayaUI.MQtUtil.findMenuItem(pathstr)
     if ptr is not None:
         return wrapinstance(ptr)
+    return None
+
+
+def get_main_window_name():
+    return pmc.MelGlobals()['gMainWindow']
