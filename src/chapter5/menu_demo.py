@@ -1,7 +1,7 @@
 import pymel.core as pmc
 
 import mayautils
-from uiutils import QtGui
+from qtshim import QtGui
 
 
 

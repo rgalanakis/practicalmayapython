@@ -1,4 +1,4 @@
-from uiutils import QtCore, QtGui, wrapinstance
+from qtshim import QtCore, QtGui, wrapinstance
 
 import maya.OpenMayaUI as OpenMayaUI
 import pymel.core as pmc

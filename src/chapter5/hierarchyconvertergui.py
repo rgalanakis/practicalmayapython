@@ -1,4 +1,4 @@
-from uiutils import QtGui, QtCore, Signal
+from qtshim import QtGui, QtCore, Signal
 
 
 class HierarchyConverterController(QtCore.QObject):

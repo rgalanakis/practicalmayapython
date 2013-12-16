@@ -1,9 +1,14 @@
+"""
+Provides a common interface between PyQt4 and PySide.
+"""
+
 try:
     from PySide import QtCore, QtGui, shiboken
     Signal = QtCore.Signal
 
     def wrapinstance(ptr):
-        """Like sip.wrapinstance, but for PySide."""
+        """Converts a pointer (int or long) into the concrete
+        PyQt/PySide object it represents."""
         # pointers for Qt should always be long integers
         ptr = long(ptr)
         # Get the QObject for this pointer,
@@ -28,5 +33,6 @@ except ImportError:
     Signal = QtCore.pyqtSignal
     import sip
     def wrapinstance(ptr):
+        """Converts a pointer (int or long) into the concrete
+        PyQt/PySide object it represents."""
         return sip.wrapinstance(long(ptr), QtCore.QObject)
-  
