@@ -1,11 +1,10 @@
 import maya.OpenMayaUI as OpenMayaUI
 import pymel.core as pmc
-from qtshim import QtCore, QtGui, wrapinstance
+from qtshim import QtGui, wrapinstance
 
 
 def get_maya_window():
     """Return the QMainWindow for the main Maya window."""
-
     winptr = OpenMayaUI.MQtUtil.mainWindow()
     if winptr is None:
         raise RuntimeError('No Maya window found.')
