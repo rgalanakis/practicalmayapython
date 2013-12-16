@@ -1,7 +1,6 @@
-from qtshim import QtCore, QtGui, wrapinstance
-
 import maya.OpenMayaUI as OpenMayaUI
 import pymel.core as pmc
+from qtshim import QtCore, QtGui, wrapinstance
 
 
 def get_maya_window():

@@ -8,7 +8,7 @@ import pymel.core as pmc
 import hierarchyconvertergui as hierconvgui
 import mayautils
 import _hierarchyconvertermayastate
-import charcreator
+import charcreator #(1)
 
 def _replace_callback(onSelChanged):
     oldCBID = getattr(_hierarchyconvertermayastate, 'cbid', None)
@@ -30,10 +30,10 @@ def show():
         _replace_callback(onSelChanged)
         parent = mayautils.get_maya_window()
         _window = hierconvgui.create_window(cont, parent)
-        def onconvert(prefix):
+        def onconvert(prefix): #(2)
             settings = dict(
                 charcreator.SETTINGS_DEFAULT,
-                prefix=unicode(prefix))
+                prefix=unicode(prefix)) #(3)
             charcreator.convert_hierarchies_main(settings)
-        _window.convertClicked.connect(onconvert)
+        _window.convertClicked.connect(onconvert) #(4)
     _window.show()

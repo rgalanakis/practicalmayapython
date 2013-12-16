@@ -18,20 +18,15 @@ def version1():
 def version2():
     """Shows creating textbox, layout, and central widget."""
     def create_window():
-        # Create the widgets, starting with a window
-        window = QtGui.QMainWindow()
-        # Create a container that is parented to the window
+        window = QtGui.QMainWindow() #(1)
         container = QtGui.QWidget(window)
-        # Create a textbox that is parented to the container
         textbox = QtGui.QLineEdit(container)
 
-        # Now, set up the layout.
-        layout = QtGui.QHBoxLayout(container)
+        layout = QtGui.QHBoxLayout(container) #(2)
         container.setLayout(layout)
-        layout.addWidget(textbox)
-        window.setCentralWidget(container)
+        layout.addWidget(textbox) #(3)
+        window.setCentralWidget(container) #(4)
 
-        # Return the window so it can be shown
         return window
 
     if __name__ == '__main__':
@@ -74,7 +69,7 @@ def version3():
 def version4():
     """Adds convertClicked signal and support."""
 
-    class ConverterWindow(QtGui.QMainWindow):
+    class ConverterWindow(QtGui.QMainWindow): #(1)
         convertClicked = Signal(str)
 
     def create_window():
@@ -86,9 +81,9 @@ def version4():
         textbox = QtGui.QLineEdit(container)
         button = QtGui.QPushButton('Convert', container)
 
-        def onclick():
+        def onclick(): #(2)
             window.convertClicked.emit(textbox.text())
-        button.clicked.connect(onclick)
+        button.clicked.connect(onclick) #(3)
 
         layout = QtGui.QHBoxLayout(container)
         container.setLayout(layout)
@@ -100,25 +95,25 @@ def version4():
         return window
 
     if __name__ == '__main__':
-        def onconvert(prefix):
+        def onconvert(prefix): #(4)
             print 'Convert clicked! Prefix:', prefix
         app = QtGui.QApplication([])
         win = create_window()
-        win.convertClicked.connect(onconvert)
+        win.convertClicked.connect(onconvert) #(5)
         win.show()
         app.exec_()
-#version4()
+version4()
 
 def version5():
     """Adds selection changed handling, controller, and status bar."""
 
-    class HierarchyConverterController(QtCore.QObject):
+    class HierarchyConverterController(QtCore.QObject): #(1)
         selectionChanged = Signal(list)
 
     class ConverterWindow(QtGui.QMainWindow):
         convertClicked = Signal(str)
 
-    def create_window(controller):
+    def create_window(controller): #(2)
         window = ConverterWindow()
         window.setWindowTitle('Hierarchy Converter')
         statusbar = window.statusBar()
@@ -132,7 +127,7 @@ def version5():
             window.convertClicked.emit(textbox.text())
         button.clicked.connect(onclick)
 
-        def onSelChanged(newsel):
+        def onSelChanged(newsel): #(3)
             if not newsel:
                 txt = 'Nothing selected.'
             elif len(newsel) == 1:
@@ -140,7 +135,7 @@ def version5():
             else:
                 txt = '%s objects selected.' % len(newsel)
             statusbar.showMessage(txt)
-        controller.selectionChanged.connect(onSelChanged)
+        controller.selectionChanged.connect(onSelChanged) #(4)
 
         layout = QtGui.QHBoxLayout(container)
         container.setLayout(layout)
@@ -151,11 +146,11 @@ def version5():
 
         return window
 
-    def _pytest():
-        import random
+    def _pytest(): #(1)
+        import random #(2)
 
-        controller = HierarchyConverterController()
-        def nextsel():
+        controller = HierarchyConverterController() #(3)
+        def nextsel(): #(4)
             return random.choice([
                 [],
                 ['single'],
@@ -164,16 +159,16 @@ def version5():
 
         def onconvert(prefix):
             print 'Convert clicked! Prefix:', prefix
-            controller.selectionChanged.emit(nextsel())
+            controller.selectionChanged.emit(nextsel()) #(5)
 
         app = QtGui.QApplication([])
-        win = create_window(controller)
+        win = create_window(controller) #(6)
         win.convertClicked.connect(onconvert)
         win.show()
         app.exec_()
 
     if __name__ == '__main__':
-        _pytest()
+        _pytest() #(7)
 #version5()
 
 def version6():
@@ -241,4 +236,4 @@ def version6():
 
     if __name__ == '__main__':
         _pytest()
-version6()
+#version6()

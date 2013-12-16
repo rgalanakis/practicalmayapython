@@ -11,10 +11,10 @@ def show():
     global _window
     if _window is None:
         cont = hierconvgui.HierarchyConverterController()
-        def onSelChanged(_):
+        def onSelChanged(_): #(1)
             cont.selectionChanged.emit(
                 pmc.selected(type='transform'))
-        OpenMaya.MEventMessage.addEventCallback(
+        OpenMaya.MEventMessage.addEventCallback( #(2)
             'SelectionChanged', onSelChanged)
         parent = mayautils.get_maya_window()
         _window = hierconvgui.create_window(cont, parent)
