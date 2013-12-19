@@ -1,6 +1,6 @@
 """Add timeouts."""
 import json, zmq, mayaserver
-from client_5 import create_client, start_process
+from client_4 import create_client, start_process, SETCMD
 
 import time
 
@@ -32,6 +32,7 @@ def sendrecv(socket, data, timeoutS=10.0):
 
 
 if __name__ == '__main__':
+    SETCMD('_exceptions')
     start_process()
     sock = create_client()
     sendrecv(sock, ('exec', 'import time'))

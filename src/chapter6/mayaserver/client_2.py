@@ -6,24 +6,12 @@ Adds a simple client/server and process management.
 - create a client
 - sendrecv
 """
-
+import atexit
 import json
-import os
 import subprocess
 import zmq
 
-def kill(pid):
-    if os.name == 'nt':
-        os.system('taskkill /f /pid %s' % pid)
-    else:
-        os.system('kill -SIGKILL %s' % pid)
-
-
-from client_1 import start_process, MAYAEXE, MAYAPYLIB
-if __name__ == '__main__':
-    proc = start_process()
-    kill(proc.pid)
-
+from client_1 import MAYAEXE, kill
 
 # We do this so we can have the string here for copying,
 # but override it in code. See _ORIG_COMMAND
@@ -33,6 +21,7 @@ COMMAND = ('python("import mayaserver.server;'
 def start_process():
     process = subprocess.Popen(
         [MAYAEXE, '-command', COMMAND]) # (2)
+    atexit.register(kill, process.pid)
     return process
 
 _ORIG_COMMAND = COMMAND
@@ -60,4 +49,3 @@ if __name__ == '__main__':
     sock = create_client()
     got = sendrecv(sock, 'Ping')
     print 'Got: %r. Shutting down.' % got
-    kill(proc.pid)

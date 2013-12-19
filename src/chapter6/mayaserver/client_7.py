@@ -1,7 +1,8 @@
 """Add handshake support and logging."""
 
 import atexit, os, subprocess, zmq
-from client_2 import MAYAPYLIB, MAYAEXE, SETCMD
+from client_1 import MAYAPYLIB, MAYAEXE
+from client_2 import SETCMD
 from client_6 import TimeoutError, sendrecv
 
 COMMAND = ('python("import mayaserver.server;'
@@ -33,15 +34,6 @@ def start_server_and_socketgetter():
 
 
 if __name__ == '__main__':
-    def start_and_get_pid():
-        getsock = start_server_and_socketgetter()
-        sock = getsock()
-        sendrecv(sock, ('exec', 'import os'))
-        return sendrecv(sock, ('eval', 'os.getpid()'))
-    srv1Pid = start_and_get_pid()
-    srv2Pid = start_and_get_pid()
-    print 'Client proc %s started Maya procs: %s, %s' % (
-        os.getpid(), srv1Pid, srv2Pid)
     createsock = start_server_and_socketgetter()
     sock = createsock()
     sendrecv(sock, ('exec', 'import time'))
@@ -53,3 +45,16 @@ if __name__ == '__main__':
         sock = createsock()
     sendrecv(sock, ('eval', '1 + 1'))
     print 'And recovered successfully!'
+
+
+if __name__ == '__main__':
+
+    def start_and_get_pid():
+        getsock = start_server_and_socketgetter()
+        sock = getsock()
+        sendrecv(sock, ('exec', 'import os'))
+        return sendrecv(sock, ('eval', 'os.getpid()'))
+    srv1Pid = start_and_get_pid()
+    srv2Pid = start_and_get_pid()
+    print 'Client proc %s started Maya procs: %s, %s' % (
+        os.getpid(), srv1Pid, srv2Pid)

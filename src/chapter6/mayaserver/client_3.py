@@ -3,7 +3,7 @@ Exec and eval support (with execution scope)
 is added to the server and hooked up here.
 """
 
-from client_2 import start_process, create_client, sendrecv, kill, SETCMD
+from client_2 import start_process, create_client, sendrecv, SETCMD
 
 if __name__ == '__main__':
     SETCMD('_sendrecv')
@@ -16,4 +16,3 @@ if __name__ == '__main__':
     gotexec = sendrecv(sock, ('eval', 'a'))
     print 'Got Exec: %r' % gotexec
     print 'Shutting down.'
-    kill(proc.pid)

@@ -1,7 +1,7 @@
 """Add exception handling support."""
 import json
 
-from client_3 import start_process, create_client, SETCMD, kill
+from client_3 import start_process, create_client, SETCMD
 
 import mayaserver
 
@@ -25,10 +25,8 @@ if __name__ == '__main__':
     try:
         sendrecv(sock, ('spam', ''))
     except RuntimeError as ex:
-        print 'Got indended error!', ex
+        print 'Got intended error!', ex
     try:
         sendrecv(sock, ('eval', 'a + b'))
     except RuntimeError as ex:
-        print 'Got indended error!', ex
-    print 'Shutting down.'
-    kill(proc.pid)
+        print 'Got intended error!', ex
