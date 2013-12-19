@@ -1,27 +1,45 @@
-"""Launches Maya with a startup command that will run the server.
-Uses a basic 'Ping' command to get the Maya version.
-Adds serialization.
-Shows handle inheritance.
 """
+Adds a simple client/server and process management.
 
-VERSION = '_2'
+- how to kill a process.
+- send the -command argument to Maya.
+- create a client
+- sendrecv
+"""
 
 import json
 import os
 import subprocess
 import zmq
 
-MAYAEXE = r'C:\Program Files\Autodesk\Maya 2011 Subscription Advantage Pack\bin\mayabatch.exe'#r'C:\Program Files\Autodesk\Maya2014\bin\maya.exe'
-MAYAPYLIB = r'C:\pydev\practicalmayapython\src\chapter6'#r'C:\mayapybook\pylib'
+def kill(pid):
+    if os.name == 'nt':
+        os.system('taskkill /f /pid %s' % pid)
+    else:
+        os.system('kill -SIGKILL %s' % pid)
 
+
+from client_1 import start_process, MAYAEXE, MAYAPYLIB
+if __name__ == '__main__':
+    proc = start_process()
+    kill(proc.pid)
+
+
+# We do this so we can have the string here for copying,
+# but override it in code. See _ORIG_COMMAND
+COMMAND = ('python("import mayaserver.server;'
+           'mayaserver.server.runserver()");') #(1)
 
 def start_process():
-    script = 'python("import mayaserver.server%s;mayaserver.server%s.runserver()");' % (VERSION, VERSION)
-    environ = dict(os.environ)
-    pypath = environ.get('PYTHONPATH', '')
-    environ['PYTHONPATH'] = os.pathsep.join([pypath, MAYAPYLIB])
-    proc = subprocess.Popen([MAYAEXE, '-command', script], env=environ)
-    return proc
+    process = subprocess.Popen(
+        [MAYAEXE, '-command', COMMAND]) # (2)
+    return process
+
+_ORIG_COMMAND = COMMAND
+def SETCMD(suffix, orig=_ORIG_COMMAND):
+    global COMMAND
+    COMMAND = orig.replace('.server', '.server' + suffix)
+    return COMMAND
 
 def create_client():
     socket = zmq.Context().socket(zmq.REQ)
@@ -35,9 +53,11 @@ def sendrecv(socket, data):
     unpickrecved = json.loads(recved)
     return unpickrecved
 
+
 if __name__ == '__main__':
-    p = start_process()
+    SETCMD('_pingable')
+    proc = start_process()
     sock = create_client()
     got = sendrecv(sock, 'Ping')
     print 'Got: %r. Shutting down.' % got
-    p.kill()
+    kill(proc.pid)

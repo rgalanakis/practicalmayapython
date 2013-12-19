@@ -1,34 +1,45 @@
-"""Add handshake support and logging."""
-import atexit, os, subprocess, zmq
-from client_2 import MAYAPYLIB, MAYAEXE
-from client_5 import sendrecv
+"""Add timeouts."""
+import json, zmq, mayaserver
+from client_5 import create_client, start_process
 
-def start_server_and_connect():
-    hndshkSock = zmq.Context().socket(zmq.REP)
-    hndshkPort = hndshkSock.bind_to_random_port('tcp://127.0.0.1')
-    script = ('python("import mayaserver.server_6;mayaserver.server_6.runserver(%s)");' % hndshkPort)
-    def startproc():
-        environ = dict(os.environ)
-        pypath = environ.get('PYTHONPATH', '')
-        environ['PYTHONPATH'] = os.pathsep.join([pypath, MAYAPYLIB])
-        proc = subprocess.Popen([MAYAEXE, '-command', script], env=environ)
-        atexit.register(proc.kill)
-    startproc()
-    reqPort = int(hndshkSock.recv())
-    hndshkSock.send('')
-    hndshkSock.close()
+import time
 
-    reqSock = zmq.Context().socket(zmq.REQ)
-    reqSock.connect('tcp://127.0.0.1:%s' % reqPort)
-    return reqSock
+class TimeoutError(Exception):
+    pass
+
+
+def sendrecv(socket, data, timeoutS=10.0):
+    socket.send(json.dumps(data))
+    starttime = time.time()
+    while True:
+        try:
+            recved = socket.recv(zmq.NOBLOCK)
+            break
+        except zmq.ZMQError as ex:
+            if ex.errno != zmq.EAGAIN:
+                raise
+            if time.time() - starttime > timeoutS:
+                raise TimeoutError()
+            time.sleep(timeoutS / 50.0)
+
+    code, response = json.loads(recved)
+    if code == mayaserver.SUCCESS:
+        return response
+    if code == mayaserver.UNHANDLED_ERROR:
+        raise RuntimeError(response)
+    assert code == mayaserver.INVALID_METHOD
+    raise RuntimeError('Sent invalid method to server: %s' % response)
 
 
 if __name__ == '__main__':
-    def start_and_get_pid():
-        sock = start_server_and_connect()
-        sendrecv(sock, ('exec', 'import os'))
-        return sendrecv(sock, ('eval', 'os.getpid()'))
-    srv1Pid = start_and_get_pid()
-    srv2Pid = start_and_get_pid()
-    print 'Client proc %s started Maya procs: %s, %s' % (
-        os.getpid(), srv1Pid, srv2Pid)
+    start_process()
+    sock = create_client()
+    sendrecv(sock, ('exec', 'import time'))
+    try:
+        sendrecv(sock, ('exec', 'time.sleep(5)'), .1)
+        print 'Did not time out :('
+    except TimeoutError:
+        print 'Timed out successfully!'
+        sock = create_client()
+    sendrecv(sock, ('eval', '1 + 1'))
+    print 'And recovered successfully!'

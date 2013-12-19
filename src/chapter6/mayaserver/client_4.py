@@ -1,28 +1,34 @@
 """Add exception handling support."""
 import json
 
-import client_2
-client_2.VERSION = '_4'
-from client_2 import start_process, create_client
+from client_3 import start_process, create_client, SETCMD, kill
+
+import mayaserver
 
 def sendrecv(socket, data):
     tosend = json.dumps(data)
     socket.send(tosend)
     recved = socket.recv()
     code, response = json.loads(recved)
-    if code != 200:
-        raise Exception(response)
-    return response
+    if code == mayaserver.SUCCESS:
+        return response
+    if code == mayaserver.UNHANDLED_ERROR:
+        raise RuntimeError(response)
+    assert code == mayaserver.INVALID_METHOD
+    raise RuntimeError('Sent invalid method to server: %s' % response)
+
 
 if __name__ == '__main__':
-    p = start_process()
+    SETCMD('_exceptions')
+    proc = start_process()
+    sock = create_client()
     try:
-        sock = create_client()
-        got = sendrecv(sock, ('eval', 'a + b'))
-        print 'Got: %r' % got
-    except Exception as ex:
-        print 'Error!'
-        print ex.args[0]
-    finally:
-        print 'Shutting down.'
-        p.kill()
+        sendrecv(sock, ('spam', ''))
+    except RuntimeError as ex:
+        print 'Got indended error!', ex
+    try:
+        sendrecv(sock, ('eval', 'a + b'))
+    except RuntimeError as ex:
+        print 'Got indended error!', ex
+    print 'Shutting down.'
+    kill(proc.pid)

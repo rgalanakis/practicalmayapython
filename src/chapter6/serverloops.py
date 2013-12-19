@@ -44,18 +44,16 @@ def client2():
 
 
 def loop3():
-    import operator
-
     sock = zmq.Context().socket(zmq.REP)
     sock.bind('tcp://127.0.0.1:5557')
     while True:
         request = json.loads(sock.recv())
-        methodname, args = request
-        if methodname == '+':
-            func = operator.add
-        elif methodname == '-':
-            func = operator.sub
-        response = func(*args)
+        func, args = request
+        a, b = args
+        if func == '+':
+            response = a + b
+        elif func == '-':
+            response = a - b
         sock.send(json.dumps(response))
 
 
@@ -69,33 +67,31 @@ def client3():
 
 
 def loop4():
-    import logging
-    logger = logging.getLogger(__name__)
-    import operator
-    import traceback
 
     sock = zmq.Context().socket(zmq.REP)
     sock.bind('tcp://127.0.0.1:5558')
-    def doloop():
-        request = json.loads(sock.recv())
-        methodname, args = request
-        if methodname == '+':
-            func = operator.add
-        elif methodname == '-':
-            func = operator.sub
-        try:
-            response = func(*args)
-            pickled = json.dumps([200, response])
-        except Exception:
-            response = ''.join(traceback.format_exc())
-            pickled = json.dumps([500, response])
-        sock.send(pickled)
+
+    import traceback # (1)
     while True:
+        recved = sock.recv()
         try:
-            doloop()
-        except Exception:
-            # send email to admins
-            logger.exception('Unhandled error!')
+            func, args = json.loads(recved)
+            a, b = args
+            if func == '+':
+                response = a + b
+                code = 1 #(2)
+            elif func == '-':
+                response = a - b
+                code = 1 #(2)
+            else: #(3)
+                code = 2
+                response = 'Invalid method: ' + func
+            pickled = json.dumps([code, response])
+        except Exception: #(4)
+            code = 3
+            response = ''.join(traceback.format_exc())
+            pickled = json.dumps([code, response])
+        sock.send(pickled)
 
 
 def client4():
@@ -104,7 +100,7 @@ def client4():
     sock.send(json.dumps(['+', (2, 3)]))
     code, response = json.loads(sock.recv())
     print 'Client4 got', code, response
-    assert code == 200
+    assert code == 0
     assert response == 5
     sock.send(json.dumps(['+', (2, '0')]))
     code, response = json.loads(sock.recv())
