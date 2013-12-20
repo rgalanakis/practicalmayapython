@@ -8,37 +8,34 @@ Shows how to launch Maya from Python, including:
 
 No server yet.
 """
+
 import os
 import subprocess
 
-# (1)
+#(1)
 MAYAEXE = r'C:\Program Files\Autodesk\Maya 2011 Subscription Advantage Pack\bin\mayabatch.exe'#r'C:\Program Files\Autodesk\Maya2014\bin\maya.exe'
-MAYAPYLIB = r'C:\pydev\practicalmayapython\src\chapter6'#r'C:\mayapybook\pylib'
 
-
-def start_process():
-    process = subprocess.Popen([MAYAEXE]) # (3)
-    return process
-
-def kill(pid):
+def kill(process): #(2)
     if os.name == 'nt':
-        os.system('taskkill /f /pid %s' % pid)
+        os.system('taskkill /f /pid %s' % process.pid)
     else:
-        os.system('kill -SIGKILL %s' % pid)
+        process.terminate()
 
 if __name__ == '__main__':
     import time
-    proc = start_process()
-    time.sleep(5) # (4)
-    kill(proc.pid)
+    proc = subprocess.Popen([MAYAEXE]) #(3)
+    # proc = subprocess.Popen([MAYAEXE, '-batch'])
+    time.sleep(5) #(4)
+    kill(proc) #(5)
+
 
 import atexit
 
 def start_process():
-    process = subprocess.Popen([MAYAEXE]) # (3)
-    atexit.register(kill, process.pid)
-
+    process = subprocess.Popen([MAYAEXE])
+    atexit.register(kill, process)
 
 if __name__ == '__main__':
     import time
     start_process()
+    time.sleep(5)
