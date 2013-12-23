@@ -8,6 +8,7 @@ from client_6 import sendrecv
 COMMAND = ('python("import mayaserver.server;'
            'mayaserver.server.runserver(%s)");') #(1)
 
+ORIGCOMMAND = COMMAND
 COMMAND = SETCMD('_handshake', COMMAND)
 
 def start_process():
