@@ -5,9 +5,11 @@ def interactive():
 
 >>> eval('1 + 1')
 2
->>> a = eval('1 + 2')
->>> a
-3
+>>> exec '1 + 1'
+
+
+>>> exec 'print 1'
+1
 >>> eval('print 1')
 Traceback (most recent call last):
   ...
@@ -16,12 +18,33 @@ Traceback (most recent call last):
          ^
 SyntaxError: invalid syntax
 
->>> exec '1 + 1'
->>> exec 'b = 1 + 2'
->>> b
-3
->>> exec 'print 1'
-1
+>>> exec 'b = 1 + 1'
+>>> eval('b')
+2
+
+>>> def exec2(s):
+...     exec s
+>>> exec2('c = 2 + 2')
+>>> eval('c')
+Traceback (most recent call last):
+NameError: name 'c' is not defined
+
+>>> def exec3(s):
+...     exec s in globals(), globals()
+>>> exec3('d = 3 + 3')
+>>> eval('d', globals(), globals())
+6
+
+>>> 'e' in globals()
+False
+>>> e = 1
+>>> 'e' in globals()
+True
+>>> 'f' in globals()
+False
+>>> exec 'f = 1'
+>>> 'f' in globals()
+True
     """
 
 

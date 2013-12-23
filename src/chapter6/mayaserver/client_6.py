@@ -2,45 +2,42 @@
 import json, zmq, mayaserver
 from client_4 import create_client, start_process, SETCMD
 
-import time
+import time #(1)
 
-class TimeoutError(Exception):
-    pass
-
-
-def sendrecv(socket, data, timeoutS=10.0):
+def sendrecv(socket, data, timeoutS=10.0): #(2)
     socket.send(json.dumps(data))
-    starttime = time.time()
-    while True:
+    starttime = time.time() #(3)
+    while True: #(4)
         try:
-            recved = socket.recv(zmq.NOBLOCK)
-            break
-        except zmq.ZMQError as ex:
-            if ex.errno != zmq.EAGAIN:
+            recved = socket.recv(zmq.NOBLOCK) #(5)
+            break #(6)
+        except zmq.Again: #(7)
+            if time.time() - starttime > timeoutS: #(8)
                 raise
-            if time.time() - starttime > timeoutS:
-                raise TimeoutError()
-            time.sleep(timeoutS / 50.0)
+            time.sleep(0.1) #(9)
 
-    code, response = json.loads(recved)
+    code, response = json.loads(recved) #(10)
+    # ...same code as before...
+
     if code == mayaserver.SUCCESS:
         return response
     if code == mayaserver.UNHANDLED_ERROR:
         raise RuntimeError(response)
-    assert code == mayaserver.INVALID_METHOD
-    raise RuntimeError('Sent invalid method to server: %s' % response)
+    if code == mayaserver.INVALID_METHOD:
+        raise RuntimeError('Sent invalid method: %s' % response)
+    raise RuntimeError('Unhandled response: %s, %s' % (
+        code, response))
 
 
 if __name__ == '__main__':
     SETCMD('_exceptions')
     start_process()
     sock = create_client()
-    sendrecv(sock, ('exec', 'import time'))
+    sendrecv(sock, ('exec', 'import time')) #(1)
     try:
-        sendrecv(sock, ('exec', 'time.sleep(5)'), .1)
-        print 'Did not time out :('
-    except TimeoutError:
+        sendrecv(sock, ('exec', 'time.sleep(5)'), .1) #(2)
+    except zmq.Again:
         print 'Timed out successfully!'
-        sock = create_client()
-    sendrecv(sock, ('eval', '1 + 1'))
+        sock = create_client() #(3)
+    sendrecv(sock, ('eval', '1 + 1')) #(4)
     print 'And recovered successfully!'

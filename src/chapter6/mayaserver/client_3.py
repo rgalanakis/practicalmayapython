@@ -15,4 +15,4 @@ if __name__ == '__main__':
     sendrecv(sock, ('exec', 'a *= 2'))
     gotexec = sendrecv(sock, ('eval', 'a'))
     print 'Got Exec: %r' % gotexec
-    print 'Shutting down.'
+
