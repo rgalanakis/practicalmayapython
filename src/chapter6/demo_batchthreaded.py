@@ -31,7 +31,8 @@ if __name__ == '__main__':
     threads = []
     num_procs = 4 # Or number of CPU cores, etc.
     for i in range(num_procs):
-        chunk = [paths[j] for j in range(i, len(paths), num_procs)]
+        chunk = [paths[j] for j in
+                 range(i, len(paths), num_procs)]
         t = threading.Thread(target=process_files, args=[chunk])
         t.start()
         threads.append(t)
