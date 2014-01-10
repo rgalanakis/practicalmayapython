@@ -39,9 +39,9 @@ KeyError: 3
 >>> objname = 'myobj'
 >>> _ = pmc.joint(name=objname)
 
->>> from maya import OpenMaya, OpenMayaAnim
+>>> from maya import OpenMaya
 >>> sellist = OpenMaya.MSelectionList()
->>> sellist.add(objname) #Can't create a list with items.
+>>> sellist.add(objname) #Can't initialize a list with items.
 >>> mobj = OpenMaya.MObject()
 >>> sellist.getDependNode(0, mobj) #Pass by reference
 >>> jntdepnode = OpenMaya.MFnDependencyNode(mobj) #Function sets
@@ -91,14 +91,15 @@ Attribute(u'perspShape.focalLength')
 >>> OpenMaya.MObjectHandle(mobject).hashCode() #doctest: +SKIP
 409350872
 
+
 >>> from maya import OpenMaya, OpenMayaAnim
 >>> joint = OpenMayaAnim.MFnIkJoint( #(1)
 ...     OpenMayaAnim.MFnIkJoint().create())
 >>> joint.setDegreesOfFreedom(True, False, True) #(2)
->>> ptrs = [OpenMaya.MScriptUtil().asBoolPtr() #(3)
-...         for su in range(3)]
->>> joint.getDegreesOfFreedom(*ptrs) #(4)
->>> [OpenMaya.MScriptUtil.getBool(ptr) for ptr in ptrs] #(5)
+>>> utils = [OpenMaya.MScriptUtil() for su in range(3)] #(3)
+>>> ptrs = [su.asBoolPtr() for su in utils] #(4)
+>>> joint.getDegreesOfFreedom(*ptrs) #(5)
+>>> [OpenMaya.MScriptUtil.getBool(ptr) for ptr in ptrs] #(6)
 [1, 0, 1]
 
     """
