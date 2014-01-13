@@ -33,6 +33,15 @@ KeyError: 3
 >>> s.items()
 [1]
 
+>>> s1 = myset.MySet()
+>>> s2 = myset.MySet()
+>>> s1.add(1)
+>>> s2.add('a')
+>>> s1.items()
+[1]
+>>> s2.items()
+['a']
+
 # Show awfulness of API
 
 >>> import pymel.core as pmc

@@ -15,9 +15,9 @@ def play_sound(wav=GOBBLE):
 def testPlay():
     """
 >>> import playsound, time
->>> playsound.play_sound(GOBBLE)
+>>> playsound.play_sound(playsound.GOBBLE)
 >>> time.sleep(2)
->>> playsound.play_sound(GORILLA)
+>>> playsound.play_sound(playsound.GORILLA)
 >>> time.sleep(2)
 """
 
