@@ -36,7 +36,8 @@ class _StringAttr(AttrSpec):
     def setvalue(self, datahandle, value):
         datahandle.setString(value)
     def create(self, fnattr, longname, shortname):
-        return fnattr.create(longname, shortname, OpenMaya.MFnData.kString)
+        return fnattr.create(longname, shortname,
+                             OpenMaya.MFnData.kString)
     def setdefault(self, fnattr, value):
         fnattr.setDefault(OpenMaya.MFnStringData().create(value))
 A_STRING = _StringAttr()
@@ -110,37 +111,35 @@ def create_attrmaker(
     attrspec, ln, sn, affectors=(), default=None,
     transformer=None, fields=()):
 
-    if not attrspec.allow_fields() and fields:
-        raise RuntimeError('%s is not configured to allow fields.' % attrspec)
+    if not attrspec.allow_fields() and fields: #(1)
+        raise RuntimeError(
+            '%s is not configured to allow fields.' %
+            attrspec)
 
-    def inner(nodetype):
-        attr = attrspec.createfnattr()
-        plug = attrspec.create(attr, ln, sn)
+    def createattr(nodeclass):
+        fnattr = attrspec.createfnattr()
+        attrobj = attrspec.create(fnattr, ln, sn)
 
-        for name, value in fields:
-            attr.addField(name, value)
+        for name, value in fields: #(2)
+            fnattr.addField(name, value)
 
         if default is not None:
-            attrspec.setdefault(attr, default)
+            attrspec.setdefault(fnattr, default)
 
-        isoutput = bool(affectors)
-        isinput = not isoutput
-        attr.setWritable(isinput)
-        attr.setStorable(isinput)
-        if isoutput:
-            assert transformer, 'Must specify transformer.'
-            nodetype.transformerdata[ln] = (
-                affectors, transformer)
+        isinput = not bool(affectors)
+        fnattr.setWritable(isinput)
+        fnattr.setStorable(isinput)
+        if not isinput and transformer is None:
+            raise RuntimeError('Must specify transformer.')
 
-        nodetype.attr_descriptors[ln] = attrspec
-
-        nodetype.addAttribute(plug)
-        setattr(nodetype, ln, plug)
+        nodeclass.addAttribute(attrobj)
+        setattr(nodeclass, ln, attrobj)
 
         for affectedby in affectors:
-            inputplug = getattr(nodetype, affectedby)
-            nodetype.attributeAffects(inputplug, plug)
-    return inner
+            inputplug = getattr(nodeclass, affectedby)
+            nodeclass.attributeAffects(inputplug, attrobj)
+        return ln, attrspec, transformer, affectors
+    return createattr
 
 
 def float_input(ln, sn, **kwargs):
@@ -150,44 +149,38 @@ def float_output(ln, sn, **kwargs):
     return create_attrmaker(A_FLOAT, ln, sn, **kwargs)
 
 
-def create_node(nodespec, name, typeid, attrmakers, node_methods=None):
-    if node_methods is None:
-        node_methods = {}
-
-    if 'compute' in node_methods:
-        raise ValueError('Cannot override compute method.')
-
-    transformerdata = {}
-    attr_descriptors = {}
+def create_node(nodespec, name, typeid, attrmakers):
+    attr_to_spec = {} #(1)
+    outattr_to_xformdata = {}
     def compute(mnode, plug, datablock):
-        nodename, attrname = plug.name().split('.')
-        if attrname not in transformerdata:
+        attrname = plug.name().split('.')[-1]
+        xformdata = outattr_to_xformdata.get(attrname) #(2)
+        if xformdata is None:
             return OpenMaya.MStatus.kUnknownParameter
-        affectors, xformer = transformerdata[attrname]
+        xformer, affectors = xformdata
         invals = []
-        for inname in affectors:
+        for inname in affectors: #(3)
             inplug = getattr(nodetype, inname)
             indata = datablock.inputValue(inplug)
-            inval = attr_descriptors[inname].getvalue(indata)
+            inval = attr_to_spec[inname].getvalue(indata)
             invals.append(inval)
-        outval = xformer(*invals)
-        outplug = getattr(nodetype, attrname)
-        outhandle = datablock.outputValue(outplug)
-        attr_descriptors[attrname].setvalue(outhandle, outval)
+        outval = xformer(*invals) #(4)
+        outhandle = datablock.outputValue(plug) #(5)
+        attr_to_spec[attrname].setvalue(outhandle, outval)
         datablock.setClean(plug)
+    methods = {'compute': compute}
+    nodetype = type(name, nodespec.nodebase(), methods)
 
-    typedict = {'compute': compute,
-                'transformerdata': transformerdata,
-                'attr_descriptors': attr_descriptors}
-    typedict.update(node_methods)
-
-    nodetype = type(name, nodespec.nodebase(), typedict)
     mtypeid = OpenMaya.MTypeId(typeid)
     def creator():
         return OpenMayaMPx.asMPxPtr(nodetype())
     def init():
-        for makeattr in attrmakers:
-            makeattr(nodetype)
+        for makeattr in attrmakers: #(6)
+            ln, attrspec, xformer, affectors = makeattr(nodetype)
+            attr_to_spec[ln] = attrspec
+            if xformer is not None:
+                outattr_to_xformdata[ln] = xformer, affectors
+
     def register(plugin):
         nodespec.register(plugin, name, mtypeid, creator, init)
     def deregister(plugin):

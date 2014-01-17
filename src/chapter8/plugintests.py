@@ -90,7 +90,8 @@ class OtherPluginTests(Base):
 
         self.assertEqual(list(n.color.get()), [0, 0, 0])
         n.color.set([20, 30, 40])
-        self.assertEqual(list(n.color.get()), [20, 30, 40])
+        n.colorR.set(22)
+        self.assertEqual(list(n.color.get()), [22, 30, 40])
 
     def testTransform(self):
         n = self.createNode('transformdemo')
