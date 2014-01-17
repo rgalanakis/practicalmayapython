@@ -58,6 +58,10 @@ class ApiStyleCirclerTests(CirclerTests):
     pluginname = 'circlernode_apistyle.py'
 
 
+class CreateAttrCirclerTests(CirclerTests):
+    pluginname = 'circlernode_createattr.py'
+
+
 class OtherPluginTests(Base):
     pluginname = 'otherplugin.py'
 
