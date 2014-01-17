@@ -73,9 +73,27 @@ Squeek
 >>> sorted(values, key=abs) # You should actually sort this way
 [-1, 2, -7]
 
+>>> def add(a, b): # Our 'full' function
+...     return a + b
+>>> def partial_add(a):
+...     def add2(b): # Create a closure
+...         return add(a, b)
+...     return add2
+>>> adder = partial_add(1) # Create the partial function.
+>>> adder(2) # Call the partial function
+3
+
 
 '''
+import math
 
+def sin_xformer(input, scale, frames):
+    angle = 6.2831853 * (input / frames)
+    return math.sin(angle) * scale
+
+
+sin = sin_xformer(3.0, 4.0, 12.0)
+assert 4.0 == sin, sin
 
 if __name__ == "__main__":
     import doctest

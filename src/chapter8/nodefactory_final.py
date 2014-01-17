@@ -70,7 +70,7 @@ class _ColorAttr(AttrSpec):
 A_COLOR = _ColorAttr()
 
 
-class NodeSpec(object):
+class NodeSpec(object): #(1)
     def nodebase(self):
         raise NotImplementedError()
     def register(self, fnplugin, typename, typeid, create, init):
@@ -78,18 +78,16 @@ class NodeSpec(object):
     def deregister(self, fnplugin, typeid):
         raise NotImplementedError()
 
-class _DependsNode(NodeSpec):
+class _DependsNode(NodeSpec): #(2)
     def nodebase(self):
-        return (OpenMayaMPx.MPxNode,)
-    def _nodetype(self):
-        return OpenMayaMPx.MPxNode.kDependNode
+        return (OpenMayaMPx.MPxNode,) #(3)
     def register(self, fnplugin, typename, typeid, create, init):
-        fnplugin.registerNode(
+        fnplugin.registerNode( #(4)
             typename, typeid, create, init,
-            self._nodetype())
-    def deregister(self, fnplugin, typeid):
+            OpenMayaMPx.MPxNode.kDependNode)
+    def deregister(self, fnplugin, typeid): #(5)
         fnplugin.deregisterNode(typeid)
-NT_DEPENDSNODE = _DependsNode()
+NT_DEPENDSNODE = _DependsNode() #(6)
 
 class TransformMatrix(OpenMayaMPx.MPxTransformationMatrix):
     pass

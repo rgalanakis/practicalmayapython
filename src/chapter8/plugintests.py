@@ -1,3 +1,4 @@
+import sys
 import unittest
 import pymel.core as pmc
 
@@ -17,9 +18,13 @@ class Base(unittest.TestCase):
         pmc.loadPlugin(self.pluginname)
 
     def tearDown(self):
-        pmc.delete(self.nodes)
+        map(self.delete, list(self.nodes))
         pmc.flushUndo()
         pmc.unloadPlugin(self.pluginname)
+
+    def delete(self, n):
+        pmc.delete(self.nodes)
+        self.nodes.remove(n)
 
     def createNode(self, name):
         n = pmc.createNode(name)
@@ -56,10 +61,17 @@ class CirclerTests(Base):
 
 class ApiStyleCirclerTests(CirclerTests):
     pluginname = 'circlernode_apistyle.py'
-
-
 class CreateAttrCirclerTests(CirclerTests):
     pluginname = 'circlernode_createattr.py'
+
+class AttrMakerCirclerTests(CirclerTests):
+    pluginname = 'circlernode_attrmaker.py'
+
+    def testCircler(self):
+        xform, circ = self.make_circler_nodes()
+        circ.frames.set(10)
+        self.delete(circ) # Forces compute or something!
+        self.assertTrue(sys.COMPUTES, str(sys.COMPUTES))
 
 
 class OtherPluginTests(Base):
