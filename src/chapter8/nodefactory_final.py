@@ -113,8 +113,7 @@ def create_attrmaker(
 
     if not attrspec.allow_fields() and fields: #(1)
         raise RuntimeError(
-            '%s is not configured to allow fields.' %
-            attrspec)
+            '%s is not configured to allow fields.' % attrspec)
 
     def createattr(nodeclass):
         fnattr = attrspec.createfnattr()
@@ -163,6 +162,50 @@ def create_node(nodespec, name, typeid, attrmakers):
         datablock.setClean(plug)
     methods = {'compute': compute}
     nodetype = type(name, nodespec.nodebase(), methods)
+
+    mtypeid = OpenMaya.MTypeId(typeid)
+    def creator():
+        return OpenMayaMPx.asMPxPtr(nodetype())
+    def init():
+        for makeattr in attrmakers: #(6)
+            ln, attrspec, xformer, affectors = makeattr(nodetype)
+            attr_to_spec[ln] = attrspec
+            if xformer is not None:
+                outattr_to_xformdata[ln] = xformer, affectors
+
+    def register(plugin):
+        nodespec.register(plugin, name, mtypeid, creator, init)
+    def deregister(plugin):
+        nodespec.deregister(plugin, mtypeid)
+    return register, deregister
+
+
+def create_node2(nodespec, name, typeid, attrmakers,
+                 override_methods=None):
+    # ... unchanged code elided ...
+    attr_to_spec = {} #(1)
+    outattr_to_xformdata = {}
+    def compute(mnode, plug, datablock):
+        attrname = plug.name().split('.')[-1]
+        xformdata = outattr_to_xformdata.get(attrname) #(2)
+        if xformdata is None:
+            return OpenMaya.MStatus.kUnknownParameter
+        xformer, affectors = xformdata
+        invals = []
+        for inname in affectors: #(3)
+            inplug = getattr(nodetype, inname)
+            indata = datablock.inputValue(inplug)
+            inval = attr_to_spec[inname].getvalue(indata)
+            invals.append(inval)
+        outval = xformer(*invals) #(4)
+        outhandle = datablock.outputValue(plug) #(5)
+        attr_to_spec[attrname].setvalue(outhandle, outval)
+        datablock.setClean(plug)
+    # ELIDE ABOVE
+    methods = {'compute': compute}
+    methods.update(override_methods)
+    nodetype = type(name, nodespec.nodebase(), methods)
+    # ... unchanged code elided ...
 
     mtypeid = OpenMaya.MTypeId(typeid)
     def creator():
