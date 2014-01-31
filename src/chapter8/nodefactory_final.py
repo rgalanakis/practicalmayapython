@@ -94,7 +94,7 @@ class TransformMatrix(OpenMayaMPx.MPxTransformationMatrix):
     pass
 
 class _TransformNode(NodeSpec):
-    xform_typeid = OpenMaya.MTypeId(0x00000901)
+    xform_typeid = OpenMaya.MTypeId(0x60080)
     def nodebase(self):
         return (OpenMayaMPx.MPxTransform,)
     def _make_node_matrix(self):
@@ -140,13 +140,6 @@ def create_attrmaker(
             nodeclass.attributeAffects(inputplug, attrobj)
         return ln, attrspec, transformer, affectors
     return createattr
-
-
-def float_input(ln, sn, **kwargs):
-    return create_attrmaker(A_FLOAT, ln, sn, **kwargs)
-
-def float_output(ln, sn, **kwargs):
-    return create_attrmaker(A_FLOAT, ln, sn, **kwargs)
 
 
 def create_node(nodespec, name, typeid, attrmakers):

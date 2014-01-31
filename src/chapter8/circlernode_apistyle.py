@@ -11,7 +11,7 @@ def init(): #(3)
     return
 
 nodeName = 'circler' #(4)
-nodeTypeID = OpenMaya.MTypeId(0x80005) #(5)
+nodeTypeID = OpenMaya.MTypeId(0x60005) #(5)
 
 def _toplugin(mobject): #(6)
     return OpenMayaMPx.MFnPlugin(

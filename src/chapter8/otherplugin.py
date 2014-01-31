@@ -5,7 +5,7 @@ _deregister_funcs = []
 
 def register_otherdemo(plugin):
     reg, dereg = nodefactory.create_node(
-        nodefactory.NT_DEPENDSNODE, 'otherdemo', 0x80006,
+        nodefactory.NT_DEPENDSNODE, 'otherdemo', 0x60006,
         [
             nodefactory.create_attrmaker(nodefactory.A_COLOR, 'color', 'c'),
             nodefactory.create_attrmaker(
@@ -22,7 +22,7 @@ def register_otherdemo(plugin):
 
 def register_transformdemo(plugin):
     reg, dereg = nodefactory.create_node(
-        nodefactory.NT_TRANSFORMNODE, 'transformdemo', 0x80007, [])
+        nodefactory.NT_TRANSFORMNODE, 'transformdemo', 0x60007, [])
     reg(plugin)
     _deregister_funcs.append(dereg)
 

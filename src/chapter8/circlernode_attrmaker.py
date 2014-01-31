@@ -60,7 +60,7 @@ def floatattr(*args, **kwargs): #(2)
 def register_circler(fnplugin): #(3)
     inputnames = ['input', 'scale', 'frames']
     reg, dereg = create_node(
-        NT_DEPENDSNODE, 'circler', 0x80005, [
+        NT_DEPENDSNODE, 'circler', 0x60005, [
             floatattr('input', 'in'),
             floatattr('scale', 'sc', default=10.0),
             floatattr('frames', 'fr', default=48.0),
