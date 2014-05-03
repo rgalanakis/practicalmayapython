@@ -311,11 +311,15 @@ True
 >>> reload(minspect)
 <module 'minspect' from '...\minspect.py'>
 
->>> minspect.webbrowser.open = lambda *_: None # Comment this line to launch a browser.
+# Comment the below line to launch a browser.
+>>> minspect.webbrowser.open = lambda *_: None
 
->>> minspect.pmhelp('joint') # Will open a browser and search for "joint"
->>> minspect.pmhelp(pmc.nodetypes) # Will open a browser to the pymel.core.nodetypes module page.
->>> minspect.pmhelp(1) # Will print out help for integers.Help on int object:
+>>> # Will open a browser and search for "joint"
+>>> minspect.pmhelp('joint')
+>>> # Will open a browser to the pymel.core.nodetypes module page.
+>>> minspect.pmhelp(pmc.nodetypes)
+>>> # Will print out help for integers.Help on int object:
+>>> minspect.pmhelp(1)
 Help on int object:
 <BLANKLINE>
 class int(object)

@@ -41,21 +41,28 @@ def _py_to_helpstr(obj):
     if not _is_pymel(obj):
         return None
     if isinstance(obj, types.ModuleType):
-        return 'generated/{0}.html#module-{0}'.format(obj.__name__)
+        return ('generated/%(module)s.html#module-%(module)s' % dict(
+                module=obj.__name__))
     if isinstance(obj, types.MethodType):
-        return 'generated/classes/{module}/{module}.{typename}.html#{module}.{typename}.{methname}'.format(
-            module=obj.__module__,
-            typename=obj.im_class.__name__,
-            methname=obj.__name__)
+        return ('generated/classes/%(module)s/'
+                '%(module)s.%(typename)s.html'
+                '#%(module)s.%(typename)s.%(methname)s' % dict(
+                    module=obj.__module__,
+                    typename=obj.im_class.__name__,
+                    methname=obj.__name__))
     if isinstance(obj, types.FunctionType):
-        return 'generated/functions/{module}/{module}.{funcname}.html#{module}.{funcname}'.format(
-            module=obj.__module__,
-            funcname=obj.__name__)
+        return ('generated/functions/%(module)s/'
+                '%(module)s.%(funcname)s.html'
+                '#%(module)s.%(funcname)s' % dict(
+                    module=obj.__module__,
+                    funcname=obj.__name__))
     if not isinstance(obj, type):
         obj = type(obj)
-    return 'generated/classes/{module}/{module}.{typename}.html#{module}.{typename}'.format(
-        module=obj.__module__,
-        typename=obj.__name__)
+    return ('generated/classes/%(module)s/'
+            '%(module)s.%(typename)s.html'
+            '#%(module)s.%(typename)s' % dict(
+                module=obj.__module__,
+                typename=obj.__name__))
 
 
 def test_py_to_helpstr():
@@ -63,11 +70,25 @@ def test_py_to_helpstr():
         result = _py_to_helpstr(obj)
         assert result == ideal, '%s != %s' % (result, ideal)
     dotest('maya rocks', 'search.html?q=maya+rocks')
-    dotest(pmc.nodetypes, 'generated/pymel.core.nodetypes.html#module-pymel.core.nodetypes')
-    dotest(pmc.nodetypes.Joint, 'generated/classes/pymel.core.nodetypes/pymel.core.nodetypes.Joint.html#pymel.core.nodetypes.Joint')
-    dotest(pmc.nodetypes.Joint(), 'generated/classes/pymel.core.nodetypes/pymel.core.nodetypes.Joint.html#pymel.core.nodetypes.Joint')
-    dotest(pmc.nodetypes.Joint().getTranslation, 'generated/classes/pymel.core.nodetypes/pymel.core.nodetypes.Joint.html#pymel.core.nodetypes.Joint.getTranslation')
-    dotest(pmc.joint, 'generated/functions/pymel.core.animation/pymel.core.animation.joint.html#pymel.core.animation.joint')
+    dotest(pmc.nodetypes,
+           'generated/pymel.core.nodetypes.html'
+           '#module-pymel.core.nodetypes')
+    dotest(pmc.nodetypes.Joint,
+           'generated/classes/pymel.core.nodetypes/'
+           'pymel.core.nodetypes.Joint.html'
+           '#pymel.core.nodetypes.Joint')
+    dotest(pmc.nodetypes.Joint(),
+           'generated/classes/pymel.core.nodetypes/'
+           'pymel.core.nodetypes.Joint.html'
+           '#pymel.core.nodetypes.Joint')
+    dotest(pmc.nodetypes.Joint().getTranslation,
+           'generated/classes/pymel.core.nodetypes/'
+           'pymel.core.nodetypes.Joint.html'
+           '#pymel.core.nodetypes.Joint.getTranslation')
+    dotest(pmc.joint,
+           'generated/functions/pymel.core.animation/'
+           'pymel.core.animation.joint.html'
+           '#pymel.core.animation.joint')
     dotest(object(), None)
     dotest(10, None)
     dotest([], None)
@@ -79,7 +100,9 @@ def test_py_to_helpstrFAIL():
 
 
 import webbrowser # (1)
-HELP_ROOT_URL = 'http://download.autodesk.com/global/docs/maya2013/en_us/PyMel'# (2)
+HELP_ROOT_URL = ('http://download.autodesk.com/global/docs/'
+                 'maya2013/en_us/PyMel')# (2)
+
 
 def pmhelp(obj): # (3)
     """Gives help for a pymel or python object.
