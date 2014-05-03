@@ -1,12 +1,10 @@
 import math
 from maya import OpenMayaMPx
-from nodefactory_final import (
-    NT_DEPENDSNODE, A_FLOAT, create_attrmaker, create_node
-)
+from nodefactory_final import (create_node, NT_DEPENDSNODE,
+    float_input, float_output)
 
 _deregister_funcs = []
-def floatattr(*args, **kwargs):
-    return create_attrmaker(A_FLOAT, *args, **kwargs)
+
 def make_transformer(mathfunc):
     def inner(input, scale, frames):
         angle = 6.2831853 * (input / frames)
@@ -20,13 +18,16 @@ def register_circler(plugin):
     reg, dereg = create_node(
         NT_DEPENDSNODE, 'circler', 0x60005,
         [
-            floatattr('input', 'in'),
-            floatattr('scale', 'sc', default=10.0),
-            floatattr('frames', 'fr', default=48.0),
-            floatattr('outSine', 'so',
+            float_input('input', 'in'),
+            float_input('scale', 'sc', default=10.0),
+            float_input('frames', 'fr', default=48.0),
+
+            float_output(
+                'outSine', 'so',
                 affectors=inputnames,
                 transformer=sin),
-            floatattr('outCosine', 'co',
+            float_output(
+                'outCosine', 'co',
                 affectors=inputnames,
                 transformer=cosine),
         ])

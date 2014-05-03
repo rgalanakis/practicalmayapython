@@ -23,7 +23,7 @@ class Base(unittest.TestCase):
         pmc.unloadPlugin(self.pluginname)
 
     def delete(self, n):
-        pmc.delete(n)
+        pmc.delete(self.nodes)
         self.nodes.remove(n)
 
     def createNode(self, name):
@@ -99,13 +99,6 @@ class OtherPluginTests(Base):
         self.assertEqual(list(n.translate.get()), [0, 0, 0])
         n.translate.set([1, 2, 3])
         self.assertEqual(list(n.translate.get()), [1, 2, 3])
-
-    def testOverride(self):
-        n = self.createNode('overridesdemo')
-        self.assertFalse(sys.CONNCALLS)
-        j = self.createNode('joint')
-        n.colorR.connect(j.translateX)
-        self.assertEqual(sys.CONNCALLS, [0])
 
 
 if __name__ == '__main__':

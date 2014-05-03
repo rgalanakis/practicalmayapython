@@ -2,7 +2,8 @@ import math
 from maya import OpenMaya, OpenMayaMPx
 
 class Circler(OpenMayaMPx.MPxNode): #(1)
-    pass
+    def compute(self, *args):
+        pass
 
 def create(): #(2)
     return OpenMayaMPx.asMPxPtr(Circler())
@@ -62,16 +63,16 @@ def init():
     nAttr = OpenMaya.MFnNumericAttribute() #(1)
     kFloat = OpenMaya.MFnNumericData.kFloat
 
-    # Setup the input attributes
-    Circler.input = nAttr.create('input', 'in', kFloat, 0.0) #(2)
+    #(2) Setup the input attributes
+    Circler.input = nAttr.create('input', 'in', kFloat, 0.0)
     nAttr.setStorable(True)
     Circler.scale = nAttr.create('scale', 'sc', kFloat, 10.0)
     nAttr.setStorable(True)
     Circler.frames = nAttr.create('frames', 'fr', kFloat, 48.0)
     nAttr.setStorable(True)
 
-    # Setup the output attributes
-    Circler.outSine = nAttr.create('outSine', 'so', kFloat, 0.0) #(3)
+    #(3) Setup the output attributes
+    Circler.outSine = nAttr.create('outSine', 'so', kFloat, 0.0)
     nAttr.setWritable(False)
     nAttr.setStorable(False)
     Circler.outCosine = nAttr.create(
@@ -79,15 +80,15 @@ def init():
     nAttr.setWritable(False)
     nAttr.setStorable(False)
 
-    # Add the attributes to the node
-    Circler.addAttribute(Circler.input) #(4)
+    #(4) Add the attributes to the node
+    Circler.addAttribute(Circler.input)
     Circler.addAttribute(Circler.scale)
     Circler.addAttribute(Circler.frames)
     Circler.addAttribute(Circler.outSine)
     Circler.addAttribute(Circler.outCosine)
 
-    # Set the attribute dependencies
-    Circler.attributeAffects(Circler.input, Circler.outSine) #(5)
+    #(5) Set the attribute dependencies
+    Circler.attributeAffects(Circler.input, Circler.outSine)
     Circler.attributeAffects(Circler.input, Circler.outCosine)
     Circler.attributeAffects(Circler.scale, Circler.outSine)
     Circler.attributeAffects(Circler.scale, Circler.outCosine)

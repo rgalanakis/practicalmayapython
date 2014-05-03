@@ -90,11 +90,10 @@ class _DependsNode(NodeSpec): #(2)
         fnplugin.deregisterNode(typeid)
 NT_DEPENDSNODE = _DependsNode() #(6)
 
-class TransformMatrix(OpenMayaMPx.MPxTransformationMatrix):
-    pass
-
 class _TransformNode(NodeSpec):
     xform_typeid = OpenMaya.MTypeId(0x60080)
+    class TransformMatrix(OpenMayaMPx.MPxTransformationMatrix):
+        pass
     def nodebase(self):
         return (OpenMayaMPx.MPxTransform,)
     def _make_node_matrix(self):
@@ -109,17 +108,17 @@ NT_TRANSFORMNODE = _TransformNode()
 
 def create_attrmaker(
     attrspec, ln, sn, affectors=(), default=None,
-    transformer=None, fields=()):
+    transformer=None, fields=()): #(1)
 
-    if not attrspec.allow_fields() and fields: #(1)
+    if not attrspec.allow_fields() and fields: #(2)
         raise RuntimeError(
-            '%s is not configured to allow fields.' % attrspec)
+            'Fields not allowed for %s.' % attrspec)
 
     def createattr(nodeclass):
         fnattr = attrspec.createfnattr()
         attrobj = attrspec.create(fnattr, ln, sn)
 
-        for name, value in fields: #(2)
+        for name, value in fields: #(3)
             fnattr.addField(name, value)
 
         if default is not None:
@@ -139,6 +138,13 @@ def create_attrmaker(
             nodeclass.attributeAffects(inputplug, attrobj)
         return ln, attrspec, transformer, affectors
     return createattr
+
+
+def float_input(ln, sn, **kwargs):
+    return create_attrmaker(A_FLOAT, ln, sn, **kwargs)
+
+def float_output(ln, sn, **kwargs):
+    return create_attrmaker(A_FLOAT, ln, sn, **kwargs)
 
 
 def create_node(nodespec, name, typeid, attrmakers):
@@ -162,50 +168,6 @@ def create_node(nodespec, name, typeid, attrmakers):
         datablock.setClean(plug)
     methods = {'compute': compute}
     nodetype = type(name, nodespec.nodebase(), methods)
-
-    mtypeid = OpenMaya.MTypeId(typeid)
-    def creator():
-        return OpenMayaMPx.asMPxPtr(nodetype())
-    def init():
-        for makeattr in attrmakers: #(6)
-            ln, attrspec, xformer, affectors = makeattr(nodetype)
-            attr_to_spec[ln] = attrspec
-            if xformer is not None:
-                outattr_to_xformdata[ln] = xformer, affectors
-
-    def register(plugin):
-        nodespec.register(plugin, name, mtypeid, creator, init)
-    def deregister(plugin):
-        nodespec.deregister(plugin, mtypeid)
-    return register, deregister
-
-
-def create_node2(nodespec, name, typeid, attrmakers,
-                 override_methods=None):
-    # ... unchanged code elided ...
-    attr_to_spec = {} #(1)
-    outattr_to_xformdata = {}
-    def compute(mnode, plug, datablock):
-        attrname = plug.name().split('.')[-1]
-        xformdata = outattr_to_xformdata.get(attrname) #(2)
-        if xformdata is None:
-            return OpenMaya.MStatus.kUnknownParameter
-        xformer, affectors = xformdata
-        invals = []
-        for inname in affectors: #(3)
-            inplug = getattr(nodetype, inname)
-            indata = datablock.inputValue(inplug)
-            inval = attr_to_spec[inname].getvalue(indata)
-            invals.append(inval)
-        outval = xformer(*invals) #(4)
-        outhandle = datablock.outputValue(plug) #(5)
-        attr_to_spec[attrname].setvalue(outhandle, outval)
-        datablock.setClean(plug)
-    # ELIDE ABOVE
-    methods = {'compute': compute}
-    methods.update(override_methods)
-    nodetype = type(name, nodespec.nodebase(), methods)
-    # ... unchanged code elided ...
 
     mtypeid = OpenMaya.MTypeId(typeid)
     def creator():
