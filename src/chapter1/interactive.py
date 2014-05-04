@@ -240,9 +240,9 @@ False
 True
 
 >>> joint = pmc.nodetypes.Joint()
->>> type(joint.children)
+>>> type(joint.getTranslation)
 <type 'instancemethod'>
->>> isinstance(joint.children, types.MethodType)
+>>> isinstance(joint.getTranslation, types.MethodType)
 True
 
 >>> class MyClass(object):

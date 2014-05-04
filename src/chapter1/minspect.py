@@ -122,3 +122,4 @@ def pmhelp(obj): # (3)
 
 if __name__ == '__main__':
     test_py_to_helpstr()
+    print 'Tests ran successfully.'
