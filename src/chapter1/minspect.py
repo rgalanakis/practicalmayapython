@@ -118,3 +118,7 @@ def pmhelp(obj): # (3)
         help(obj) # (4)
     else:
         webbrowser.open(HELP_ROOT_URL + tail) # (5)
+
+
+if __name__ == '__main__':
+    test_py_to_helpstr()

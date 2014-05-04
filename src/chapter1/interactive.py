@@ -156,7 +156,7 @@ Attribute(u'pSphere1.translate')
 '[0.0, 0.0, 0.0]'
 >>> print t, lst # The print implicitly calls str(t)
 [0.0, 0.0, 0.0] [0.0, 0.0, 0.0]
->>> repr(t) # repr returns more detailed string for an object.
+>>> repr(t) # repr returns a more detailed string for an object
 'dt.Vector([0.0, 0.0, 0.0])'
 >>> repr(lst)
 '[0.0, 0.0, 0.0]'
@@ -202,10 +202,10 @@ dt.Vector([2.0, 0.0, 0.0])
 >>> help
 Type help() for interactive help, or help(object) for help about object.
 
->>> import minspect # (6)
+>>> import minspect # (1)
 >>> reload(minspect)
 <module 'minspect' from '...\minspect.py'>
->>> minspect.test_py_to_helpstrFAIL() # (7)
+>>> minspect.test_py_to_helpstrFAIL() # (2)
 Traceback (most recent call last):
 AssertionError: ...
 
