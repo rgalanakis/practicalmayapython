@@ -134,12 +134,8 @@ MRO:
   ProxyUnicode
   object
 
->>> type(xform)
-<class 'pymel.core.nodetypes.Transform'>
 >>> type(xform).__mro__
 (<class 'pymel.core.nodetypes.Transform'>, <class 'pymel.core.nodetypes.DagNode'>, <class 'pymel.core.nodetypes.Entity'>, <class 'pymel.core.nodetypes.ContainerBase'>, <class 'pymel.core.nodetypes.DependNode'>, <class 'pymel.core.general.PyNode'>, <class 'pymel.util.utilitytypes.ProxyUnicode'>, <type 'object'>)
->>> type(xform.translate)
-<class 'pymel.core.general.Attribute'>
 >>> type(xform.translate).__mro__
 (<class 'pymel.core.general.Attribute'>, <class 'pymel.core.general.PyNode'>, <class 'pymel.util.utilitytypes.ProxyUnicode'>, <type 'object'>)
 
@@ -160,7 +156,7 @@ Attribute(u'pSphere1.translate')
 '[0.0, 0.0, 0.0]'
 >>> print t, lst # The print implicitly calls str(t)
 [0.0, 0.0, 0.0] [0.0, 0.0, 0.0]
->>> repr(t) # `repr` returns more in-depth representation of an object.
+>>> repr(t) # repr returns more detailed string for an object.
 'dt.Vector([0.0, 0.0, 0.0])'
 >>> repr(lst)
 '[0.0, 0.0, 0.0]'
@@ -259,7 +255,7 @@ True
 ...     def mystaticmethod():
 ...         pass
 >>> MyClass().mymethod # (3)
-<bound method MyClass.mymethod of <__main__.MyClass object at 0x0...>>
+<bound method MyClass.mymethod of <__main__.MyClass object at...
 >>> MyClass.mymethod # (4)
 <unbound method MyClass.mymethod>
 

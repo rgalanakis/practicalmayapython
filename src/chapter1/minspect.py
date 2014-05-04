@@ -41,8 +41,8 @@ def _py_to_helpstr(obj):
     if not _is_pymel(obj):
         return None
     if isinstance(obj, types.ModuleType):
-        return ('generated/%(module)s.html#module-%(module)s' % dict(
-                module=obj.__name__))
+        return ('generated/%(module)s.html#module-%(module)s' %
+                dict(module=obj.__name__))
     if isinstance(obj, types.MethodType):
         return ('generated/classes/%(module)s/'
                 '%(module)s.%(typename)s.html'
