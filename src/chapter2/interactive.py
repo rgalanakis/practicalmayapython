@@ -183,6 +183,13 @@ nt.Joint(u'joint1')
 >>> [j for j in pmc.ls(type='joint') if j.translateX.get() > 0]
 [nt.Joint(u'joint2')]
 
+>>> deleteall()
+>>> _ = pmc.joint(), pmc.joint(), pmc.joint()
+>>> pmc.ls(type='joint', head=2)
+[nt.Joint(u'joint1'), nt.Joint(u'joint2')]
+>>> pmc.ls(type='joint', tail=2)
+[nt.Joint(u'joint2'), nt.Joint(u'joint3')]
+
 >>> def head(sequence, count):
 ...     result = []
 ...     for item in sequence:
@@ -197,7 +204,7 @@ nt.Joint(u'joint1')
 ...     result = list(sequence)
 ...     return result[-count:]
 >>> tail(pmc.ls(), 2)
-[nt.Joint(u'joint1'), nt.Joint(u'joint2')]
+[nt.Joint(u'joint2'), nt.Joint(u'joint3')]
 
 >>> deleteall()
 
@@ -243,7 +250,7 @@ nt.Joint(u'joint1')
 >>> def add_influences_fast(cl, infls):
 ...     cl.addInfluence(infls)
 >>> j1 = pmc.joint()
->>> cluster = pmc.skinCluster(j1, pmc.polyCube()[0])[0]
+>>> cluster = pmc.skinCluster(j1, pmc.polyCube()[0])
 >>> add_influences_slow(cluster, [pmc.joint(), pmc.joint()])
 >>> add_influences_fast(cluster, [pmc.joint(), pmc.joint()])
 
