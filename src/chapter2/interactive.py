@@ -197,41 +197,42 @@ nt.Joint(u'joint1')
 ...             break
 ...         result.append(item)
 ...     return result
->>> head(pmc.ls(), 2)
-[nt.Time(u'time1'), nt.SequenceManager(u'sequenceManager1')]
+>>> head(pmc.ls(type='joint'), 2)
+[nt.Joint(u'joint1'), nt.Joint(u'joint2')]
 
 >>> def tail(sequence, count):
 ...     result = list(sequence)
 ...     return result[-count:]
->>> tail(pmc.ls(), 2)
+>>> tail(pmc.ls(type='joint'), 2)
 [nt.Joint(u'joint2'), nt.Joint(u'joint3')]
 
 >>> deleteall()
 
 >>> objs = pmc.joint(), pmc.joint()
->>> def remove_selected_slow(objs):
-...     return [item for item in objs if item not in pmc.selected()]
+>>> def remove_selected(objs):
+...     return [item for item in objs
+...             if item not in pmc.selected()]
 >>> pmc.select(objs[0])
->>> remove_selected_slow(objs)
+>>> remove_selected(objs)
 [nt.Joint(u'joint2')]
 
->>> def remove_selected_faster(objs):
+>>> def remove_selected(objs):
 ...     selected = pmc.selected()
 ...     return [item for item in objs if item not in selected]
 >>> pmc.select(objs[0])
->>> remove_selected_faster(objs)
+>>> remove_selected(objs)
 [nt.Joint(u'joint2')]
 
->>> def get_hierarchy_slow(typename):
+>>> def get_type_hierarchy(typename):
 ...     node = pmc.createNode(typename)
 ...     result = node.nodeType(inherited=True)
 ...     pmc.delete(node)
 ...     return result
->>> get_hierarchy_slow('joint')
+>>> get_type_hierarchy('joint')
 [u'containerBase', u'entity', u'dagNode', u'transform', u'joint']
 
 >>> _hierarchy_cache = {}
->>> def get_hierarchy_fast(typename):
+>>> def get_type_hierarchy(typename):
 ...     result = _hierarchy_cache.get(typename)
 ...     if result is None:
 ...         node = pmc.createNode(typename)
@@ -239,20 +240,21 @@ nt.Joint(u'joint1')
 ...         pmc.delete(node)
 ...         _hierarchy_cache[typename] = result
 ...     return result
->>> get_hierarchy_fast('joint')
+>>> get_type_hierarchy('joint')
 [u'containerBase', u'entity', u'dagNode', u'transform', u'joint']
 
 >>> deleteall()
 
->>> def add_influences_slow(cl, infls):
-...     for infl in infls:
-...         cl.addInfluence(infl)
->>> def add_influences_fast(cl, infls):
-...     cl.addInfluence(infls)
 >>> j1 = pmc.joint()
 >>> cluster = pmc.skinCluster(j1, pmc.polyCube()[0])
->>> add_influences_slow(cluster, [pmc.joint(), pmc.joint()])
->>> add_influences_fast(cluster, [pmc.joint(), pmc.joint()])
+>>> def add_influences(cl, infls):
+...     for infl in infls:
+...         cl.addInfluence(infl)
+>>> add_influences(cluster, [pmc.joint(), pmc.joint()])
+
+>>> def add_influences(cl, infls):
+...     cl.addInfluence(infls)
+>>> add_influences(cluster, [pmc.joint(), pmc.joint()])
 
 """
 

@@ -145,7 +145,8 @@ def convert_to_skeleton(rootnode, prefix='skel_', _parent=None):
 
 # VERSION
 
-def _convert_to_joint(node, parent, prefix, jnt_size, lcol, rcol, ccol):
+def _convert_to_joint(node, parent, prefix,
+                      jnt_size, lcol, rcol, ccol):
     j = pmc.joint(name=prefix + node.name())
     safe_setparent(j, parent)
     j.translate.set(node.translate.get())
