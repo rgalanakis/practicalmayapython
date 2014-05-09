@@ -29,8 +29,10 @@ if hasattr(spam, 'eggs'):
 else:
     spam.ham()
 
+count = 100
+
 if spam:
-    for i in xrange(100):
+    for i in xrange(count):
         eggs(i)
 
 
@@ -175,7 +177,7 @@ RuntimeError: setAttr: The attribute 'file2.fileTextureName' is locked or connec
 ...     for f in pmc.ls(type='file'):
 ...         f.ftn.set(f.ftn.get().lower())
 ...     pmc.undoInfo(closeChunk=True)
-... except:
+... except Exception:
 ...     pmc.undoInfo(closeChunk=True)
 ...     pmc.undo()
 ...     raise
@@ -197,11 +199,12 @@ RuntimeError: setAttr: The attribute 'file2.fileTextureName' is locked or connec
 ...     pmc.undoInfo(closeChunk=True)
 ...     if ex.args[0].startswith('setAttr: The attribute '):
 ...         pmc.undo()
-...         sys.stderr.write('Cannot set attribute, fix and try again.\\n')
+...         sys.stderr.write(
+...             'Cannot set attribute, fix and try again.\\n')
 ...         sys.stderr.write(ex.args[0] + '\\n')
 ...     else:
 ...          raise
-... except:
+... except Exception:
 ...     pmc.undoInfo(closeChunk=True)
 ...     raise
 Cannot set attribute, fix and try again.
