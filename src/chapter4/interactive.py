@@ -75,9 +75,9 @@ def interactive():
 3
 
 >>> def makeadd():
-...     def add(a, b):
+...     def adder(a, b):
 ...         return a + b
-...     return add
+...     return adder
 >>> makeadd()(1, 2)
 3
 
@@ -157,7 +157,9 @@ Got 5
 >>> with open('myfile.txt') as f:
 ...     text = f.read()
 
->>> text = open('myfile.txt').read()
+>>> f = open('myfile.txt')
+>>> text = f.read()
+>>> f.close()
 
 # open can fail,
 # so make sure the variable is referenced

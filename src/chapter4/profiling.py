@@ -76,7 +76,7 @@ def _report_duration_FULL(key, duration):
             print 'durations.txt in use, cannot record.'
         else:
             _reporting_enabled = False #(7)
-            traceback.print_exc() #(8)
+            traceback.print_exc()
             print 'Disabling metrics recording.'
 
 
