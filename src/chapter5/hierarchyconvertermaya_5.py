@@ -10,12 +10,12 @@ import mayautils
 import _hierarchyconvertermayastate
 import charcreator #(1)
 
-def _replace_callback(onSelChanged):
+def _replace_callback(func):
     oldCBID = getattr(_hierarchyconvertermayastate, 'cbid', None)
     if oldCBID is not None:
         OpenMaya.MEventMessage.removeCallback(oldCBID)
     cbid = OpenMaya.MEventMessage.addEventCallback(
-        'SelectionChanged', onSelChanged)
+        'SelectionChanged', func)
     _hierarchyconvertermayastate.cbid = cbid
 
 _window = None
@@ -24,10 +24,10 @@ def show():
     global _window
     if _window is None:
         cont = hierconvgui.HierarchyConverterController()
-        def onSelChanged(_):
+        def emit_selchanged(_):
             cont.selectionChanged.emit(
                 pmc.selected(type='transform'))
-        _replace_callback(onSelChanged)
+        _replace_callback(emit_selchanged)
         parent = mayautils.get_maya_window()
         _window = hierconvgui.create_window(cont, parent)
         def onconvert(prefix): #(2)

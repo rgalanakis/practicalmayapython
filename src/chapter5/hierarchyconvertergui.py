@@ -21,7 +21,7 @@ def create_window(controller, parent=None):
         window.convertClicked.emit(textbox.text())
     button.clicked.connect(onclick)
 
-    def onSelChanged(newsel):
+    def update_statusbar(newsel):
         if not newsel:
             txt = 'Nothing selected.'
         elif len(newsel) == 1:
@@ -29,7 +29,7 @@ def create_window(controller, parent=None):
         else:
             txt = '%s objects selected.' % len(newsel)
         statusbar.showMessage(txt)
-    controller.selectionChanged.connect(onSelChanged)
+    controller.selectionChanged.connect(update_statusbar)
 
     layout = QtGui.QHBoxLayout(container)
     container.setLayout(layout)

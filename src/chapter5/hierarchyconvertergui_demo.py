@@ -127,7 +127,7 @@ def version5():
             window.convertClicked.emit(textbox.text())
         button.clicked.connect(onclick)
 
-        def onSelChanged(newsel): #(3)
+        def update_statusbar(newsel): #(3)
             if not newsel:
                 txt = 'Nothing selected.'
             elif len(newsel) == 1:
@@ -135,7 +135,7 @@ def version5():
             else:
                 txt = '%s objects selected.' % len(newsel)
             statusbar.showMessage(txt)
-        controller.selectionChanged.connect(onSelChanged) #(4)
+        controller.selectionChanged.connect(update_statusbar) #(4)
 
         layout = QtGui.QHBoxLayout(container)
         container.setLayout(layout)
@@ -194,7 +194,7 @@ def version6():
             window.convertClicked.emit(textbox.text())
         button.clicked.connect(onclick)
 
-        def onSelChanged(newsel):
+        def update_statusbar(newsel):
             if not newsel:
                 txt = 'Nothing selected.'
             elif len(newsel) == 1:
@@ -202,7 +202,7 @@ def version6():
             else:
                 txt = '%s objects selected.' % len(newsel)
             statusbar.showMessage(txt)
-        controller.selectionChanged.connect(onSelChanged)
+        controller.selectionChanged.connect(update_statusbar)
 
         layout = QtGui.QHBoxLayout(container)
         container.setLayout(layout)
