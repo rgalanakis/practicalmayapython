@@ -102,7 +102,7 @@ def version4():
         win.convertClicked.connect(onconvert) #(5)
         win.show()
         app.exec_()
-version4()
+#version4()
 
 def version5():
     """Adds selection changed handling, controller, and status bar."""
@@ -236,4 +236,4 @@ def version6():
 
     if __name__ == '__main__':
         _pytest()
-#version6()
+version6()
