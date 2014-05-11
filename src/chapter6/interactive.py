@@ -38,12 +38,12 @@ NameError: name 'c' is not defined
 >>> 'e' in globals()
 False
 >>> e = 1
->>> 'e' in globals()
+>>> 'e' in globals() # Normal assignment puts e in globals
 True
 >>> 'f' in globals()
 False
 >>> exec 'f = 1'
->>> 'f' in globals()
+>>> 'f' in globals() # Assignment in exec puts f in globals
 True
     """
 
