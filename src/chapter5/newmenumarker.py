@@ -45,23 +45,23 @@ def make_test_items():
 import json #(1)
 import os
 
-_CACHE_FILENAME = os.path.join( #(2)
+_REG_FILENAME = os.path.join( #(2)
     os.environ['MAYA_APP_DIR'],
     'newmenumarkingsystem.json')
 
-def _loadcache():
+def _loadregisry():
     try:
-        with open(_CACHE_FILENAME) as f: #(3)
+        with open(_REG_FILENAME) as f: #(3)
             return json.load(f)
     except IOError: #(4)
         return {}
 
-def _savecache(cache):
-    with open(_CACHE_FILENAME, 'w') as f: #(5)
-        json.dump(cache, f)
+def _saveregistry(registry):
+    with open(_REG_FILENAME, 'w') as f: #(5)
+        json.dump(registry, f)
 
 def register_menuitem_3(menuitem_path):
-    if menuitem_path in _loadcache(): #(6)
+    if menuitem_path in _loadregisry(): #(6)
         return
     action = mayautils.uipath_to_qtobject(menuitem_path)
     font = action.font()
@@ -69,9 +69,9 @@ def register_menuitem_3(menuitem_path):
     action.setFont(font)
     def setdefault():
         action.setFont(QtGui.QFont())
-        cache = _loadcache() #(7)
-        cache[menuitem_path] = None
-        _savecache(cache) #(8)
+        registry = _loadregisry() #(7)
+        registry[menuitem_path] = None
+        _saveregistry(registry) #(8)
     action.triggered.connect(setdefault)
 
 
