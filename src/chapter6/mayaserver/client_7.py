@@ -19,10 +19,10 @@ def start_process():
     process = subprocess.Popen(
         [MAYAEXE, '-command', command]) #(4)
     atexit.register(kill, process)
-    realport = int(handshakesock.recv()) #(5)
+    appport = int(handshakesock.recv()) #(5)
     handshakesock.send('')
     handshakesock.close() #(6)
-    return realport #(7)
+    return appport #(7)
 
 def create_client(port): #(8)
     socket = zmq.Context().socket(zmq.REQ)
@@ -32,8 +32,8 @@ def create_client(port): #(8)
 
 if __name__ == '__main__':
     def start_and_get_pid():
-        realport = start_process()
-        sock = create_client(realport)
+        appport = start_process()
+        sock = create_client(appport)
         sendrecv(sock, ('exec', 'import os'))
         return sendrecv(sock, ('eval', 'os.getpid()'))
     srv1Pid = start_and_get_pid()

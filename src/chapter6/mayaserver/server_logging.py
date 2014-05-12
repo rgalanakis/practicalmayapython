@@ -7,9 +7,9 @@ log = logging.getLogger(__name__)
 
 def runserver(handshake_port):
     sock = zmq.Context().socket(zmq.REP)
-    realport = sock.bind_to_random_port('tcp://127.0.0.1')
+    appport = sock.bind_to_random_port('tcp://127.0.0.1')
     log.info('Handshaking on %s, sending %s',
-             handshake_port, realport)
+             handshake_port, appport)
     # ... do handshake ...
     log.info('Handshake finished, looping.')
     while True:

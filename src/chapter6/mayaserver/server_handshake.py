@@ -6,11 +6,11 @@ import mayaserver
 
 def runserver(handshake_port):
     sock = zmq.Context().socket(zmq.REP)
-    realport = sock.bind_to_random_port('tcp://127.0.0.1')
+    appport = sock.bind_to_random_port('tcp://127.0.0.1')
 
     handshakesock = zmq.Context().socket(zmq.REQ)
     handshakesock.connect('tcp://127.0.0.1:%s' % handshake_port)
-    handshakesock.send(str(realport))
+    handshakesock.send(str(appport))
     handshakesock.recv() # acknowledgement
     # ... server loop is the same ...
 
