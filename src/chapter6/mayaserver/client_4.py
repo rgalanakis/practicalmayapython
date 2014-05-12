@@ -29,6 +29,6 @@ if __name__ == '__main__':
     except RuntimeError as ex:
         print 'Got intended error!', ex
     try:
-        sendrecv(sock, ('eval', 'a = 1')) #(8)
+        sendrecv(sock, ('eval', '1/0')) #(8)
     except RuntimeError as ex:
         print 'Got intended error!', ex
