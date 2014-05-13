@@ -4,7 +4,7 @@ from client_4 import create_client, start_process, SETCMD
 
 import time #(1)
 
-def sendrecv(socket, data, timeoutS=10.0): #(2)
+def sendrecv(socket, data, timeoutSecs=10.0): #(2)
     socket.send(json.dumps(data))
     starttime = time.time() #(3)
     while True: #(4)
@@ -12,7 +12,7 @@ def sendrecv(socket, data, timeoutS=10.0): #(2)
             recved = socket.recv(zmq.NOBLOCK) #(5)
             break #(6)
         except zmq.Again: #(7)
-            if time.time() - starttime > timeoutS: #(8)
+            if time.time() - starttime > timeoutSecs: #(8)
                 raise
             time.sleep(0.1) #(9)
 
