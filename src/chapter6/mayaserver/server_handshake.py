@@ -12,6 +12,7 @@ def runserver(handshake_port):
     handshakesock.connect('tcp://127.0.0.1:%s' % handshake_port)
     handshakesock.send(str(appport))
     handshakesock.recv() # acknowledgement
+    handshakesock.close()
     # ... server loop is the same ...
 
     while True:
