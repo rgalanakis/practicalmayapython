@@ -63,20 +63,20 @@ def test():
 
 >>> def cb(n, old, new):
 ...     print 'CB: %r, %r, %r' % (n, old, new)
->>> jspam = pmc.joint()
->>> jeggs = pmc.joint()
->>> cbid1 = addNameChangedCallback(cb, jspam)
->>> jspam.rename('spam') #(1)
+>>> watched = pmc.joint()
+>>> unwatched = pmc.joint()
+>>> cbid1 = addNameChangedCallback(cb, watched)
+>>> watched.rename('spam') #(1)
 CB: nt.Joint(u'spam'), u'joint1', u'spam'
->>> jeggs.rename('eggs') #(2)
+>>> unwatched.rename('eggs') #(2)
 >>> cbid2 = addNameChangedCallback(cb) #(3)
->>> jeggs.rename('eggs2') #(4)
+>>> unwatched.rename('eggs2') #(4)
 CB: nt.Joint(u'eggs2'), u'eggs', u'eggs2'
->>> jspam.rename('spam2') #(5)
+>>> watched.rename('spam2') #(5)
 CB: nt.Joint(u'spam2'), u'spam', u'spam2'
 CB: nt.Joint(u'spam2'), u'spam', u'spam2'
 >>> removeNameChangedCallback(cbid2) #(6)
->>> jeggs.rename('eggs3') #(7)
+>>> unwatched.rename('eggs3') #(7)
 
     """
 

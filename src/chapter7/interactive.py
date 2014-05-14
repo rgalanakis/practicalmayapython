@@ -3,36 +3,7 @@ def interactive():
     """
 Code for all the interactive prompts throughout the chapter.
 
-# Show how modules are objects and how to make custom types/instances
-
 >>> import myset
->>> myset.add(1)
->>> myset.add(2)
->>> myset.items()
-[1, 2]
->>> myset.remove(3)
-Traceback (most recent call last):
-KeyError: 3
->>> myset.remove(2)
->>> myset.items()
-[1]
-
->>> myset.__dict__
-{...}
-
->>> import myset
->>> s = myset.MySet()
->>> s.add(1)
->>> s.add(2)
->>> s.items()
-[1, 2]
->>> s.remove(3)
-Traceback (most recent call last):
-KeyError: 3
->>> s.remove(2)
->>> s.items()
-[1]
-
 >>> s1 = myset.MySet()
 >>> s2 = myset.MySet()
 >>> s1.add(1)
@@ -41,6 +12,16 @@ KeyError: 3
 [1]
 >>> s2.items()
 ['a']
+
+>>> myset.MySet.__dict__
+[...('__init__', <function __init__ at 0x...>),
+ ('__module__', 'myset'),
+ ('add', <function add at 0x...>),
+ ('items', <function items at 0x...>),
+ ('remove', <function remove at 0x...>)]
+>>> s = myset.MySet()
+>>> s.__dict__
+{'_state': {}}
 
 # Show awfulness of API
 
@@ -124,4 +105,18 @@ False
 > makeTrue(value)
 > print(value)
 True
+"""
+
+ignore2 = """
+face_to_vert_inds_and_normals = {
+    face0_id: [
+        [vert0_index, vert1_index, vert2_index],
+        [vert0_norm, vert1_norm, vert2_norm]
+    ],
+    face1_id: [
+        [vert1_index, vert2_index, vert3_index],
+        [vert1_norm, vert2_norm, vert3_norm]
+    ],
+    ...
+}
 """
