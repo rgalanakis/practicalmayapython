@@ -92,6 +92,11 @@ Attribute(u'perspShape.focalLength')
 >>> [OpenMaya.MScriptUtil.getBool(ptr) for ptr in ptrs] #(6)
 [1, 0, 1]
 
+>>> import pymel.core, os
+>>> for p in os.getenv('MAYA_PLUG_IN_PATH').split(os.pathsep):
+...     print p
+/Users/rgalanakis/Library/Preferences/Autodesk/maya/plug-ins
+/Users/Shared/Autodesk/maya/plug-ins
     """
 
 if __name__ == "__main__":
