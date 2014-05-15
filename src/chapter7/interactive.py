@@ -83,8 +83,8 @@ Attribute(u'perspShape.focalLength')
 
 
 >>> from maya import OpenMaya, OpenMayaAnim
->>> joint = OpenMayaAnim.MFnIkJoint( #(1)
-...     OpenMayaAnim.MFnIkJoint().create())
+>>> joint = OpenMayaAnim.MFnIkJoint() #(1)
+>>> joint.create()
 >>> joint.setDegreesOfFreedom(True, False, True) #(2)
 >>> utils = [OpenMaya.MScriptUtil() for su in range(3)] #(3)
 >>> ptrs = [su.asBoolPtr() for su in utils] #(4)
@@ -104,11 +104,11 @@ if __name__ == "__main__":
     doctest.testmod(optionflags=doctest.ELLIPSIS)
 
 ignore = """
-> value = new bool()
-> print(value)
+> value = False;
+> Print(value);
 False
-> makeTrue(value)
-> print(value)
+> MakeTrue(&value);
+> Print(value);
 True
 """
 
