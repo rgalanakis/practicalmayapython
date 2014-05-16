@@ -28,23 +28,23 @@ def create_attrmaker(
     return createattr
 
 
-def create_node(nodespec, nodename, typeid, attrmakers):
-    def compute(*_): #(1)
+def create_node(nodespec, nodename, typeid, attrmakers): #(1)
+    def compute(*_): #(2)
         sys.COMPUTES.append('hi') # REMOVE ME!
         print 'Compute not yet implemented.'
     methods = {'compute': compute}
-    nodetype = type(nodename, nodespec.nodebase(), methods) #(2)
-    tid = OpenMaya.MTypeId(typeid) #(3)
-    def creator(): #(4)
+    nodetype = type(nodename, nodespec.nodebase(), methods) #(3)
+    tid = OpenMaya.MTypeId(typeid) #(4)
+    def creator(): #(5)
         return OpenMayaMPx.asMPxPtr(nodetype())
-    def init(): #(5)
+    def init(): #(6)
         for makeattr in attrmakers:
             makeattr(nodetype)
-    def register(plugin): #(6)
+    def register(plugin): #(7)
         nodespec.register(plugin, nodename, tid, creator, init)
     def deregister(plugin):
         nodespec.deregister(plugin, tid)
-    return register, deregister #(7)
+    return register, deregister #(8)
 
 
 # end nodefactory.py
