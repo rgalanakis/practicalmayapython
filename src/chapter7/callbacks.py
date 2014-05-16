@@ -61,22 +61,22 @@ def test():
     """
 >>> patchjoint()
 
->>> def cb(n, old, new):
+>>> def cb(n, old, new): #(1)
 ...     print 'CB: %r, %r, %r' % (n, old, new)
->>> watched = pmc.joint()
+>>> watched = pmc.joint() #(2)
 >>> unwatched = pmc.joint()
->>> cbid1 = addNameChangedCallback(cb, watched)
->>> watched.rename('spam') #(1)
+>>> cbid1 = addNameChangedCallback(cb, watched) #(3)
+>>> watched.rename('spam') #(4)
 CB: nt.Joint(u'spam'), u'joint1', u'spam'
->>> unwatched.rename('eggs') #(2)
->>> cbid2 = addNameChangedCallback(cb) #(3)
->>> unwatched.rename('eggs2') #(4)
+>>> unwatched.rename('eggs') #(5)
+>>> cbid2 = addNameChangedCallback(cb) #(6)
+>>> unwatched.rename('eggs2') #(7)
 CB: nt.Joint(u'eggs2'), u'eggs', u'eggs2'
->>> watched.rename('spam2') #(5)
+>>> watched.rename('spam2') #(8)
 CB: nt.Joint(u'spam2'), u'spam', u'spam2'
 CB: nt.Joint(u'spam2'), u'spam', u'spam2'
->>> removeNameChangedCallback(cbid2) #(6)
->>> unwatched.rename('eggs3') #(7)
+>>> removeNameChangedCallback(cbid2) #(9)
+>>> unwatched.rename('eggs3') #(10)
 
     """
 
