@@ -37,26 +37,26 @@ class Circler(OpenMayaMPx.MPxNode):
     outCosine = OpenMaya.MObject() # output
 
     def compute(self, plug, data): #(1)
-        if plug in (Circler.outSine, Circler.outCosine): #(2)
-            inputData = data.inputValue(Circler.input) #(3)
-            scaleData = data.inputValue(Circler.scale)
-            framesData = data.inputValue(Circler.frames)
+        if plug not in (Circler.outSine, Circler.outCosine): #(2)
+            return OpenMaya.MStatus.kUnknownParameter
+        inputData = data.inputValue(Circler.input) #(3)
+        scaleData = data.inputValue(Circler.scale)
+        framesData = data.inputValue(Circler.frames)
 
-            inputVal = inputData.asFloat() #(4)
-            scaleFactor  = scaleData.asFloat()
-            framesPerCircle = framesData.asFloat()
+        inputVal = inputData.asFloat() #(4)
+        scaleFactor  = scaleData.asFloat()
+        framesPerCircle = framesData.asFloat()
 
-            angle = 6.2831853 * (inputVal/framesPerCircle) #(5)
-            sinResult = math.sin(angle) * scaleFactor
-            cosResult = math.cos(angle) * scaleFactor
+        angle = 6.2831853 * (inputVal/framesPerCircle) #(5)
+        sinResult = math.sin(angle) * scaleFactor
+        cosResult = math.cos(angle) * scaleFactor
 
-            sinHandle = data.outputValue(Circler.outSine) #(6)
-            cosHandle = data.outputValue(Circler.outCosine)
-            sinHandle.setFloat(sinResult) #(7)
-            cosHandle.setFloat(cosResult)
-            data.setClean(plug) #(8)
-            #return OpenMaya.MStatus.kSuccess #(9)
-        #return OpenMaya.MStatus.kUnknownParameter
+        sinHandle = data.outputValue(Circler.outSine) #(6)
+        cosHandle = data.outputValue(Circler.outCosine)
+        sinHandle.setFloat(sinResult) #(7)
+        cosHandle.setFloat(cosResult)
+        data.setClean(plug) #(8)
+        return OpenMaya.MStatus.kSuccess #(9)
 
 
 def init():
