@@ -95,6 +95,38 @@ TypeError: not all arguments converted during string formatting
 '1.234km'
 """
 
+def strconcat():
+    """
+>>> planets = 'Venus', 'Earth', 'Mars'
+>>> ', '.join(planets)
+'Venus, Earth, Mars'
+
+>>> '%s, %s, %s' % planets
+'Venus, Earth, Mars'
+
+>>> planets[0] + ', ' + planets[1] + ', ' + planets[2]
+'Venus, Earth, Mars'
+
+>>> a = planets[0] + ', '
+>>> b = a + planets[1]
+>>> c = b + ', '
+>>> d = c + planets[2]
+>>> d
+'Venus, Earth, Mars'
+    """
+
+def pathbuilding():
+    """
+>>> mydir = '.'
+
+>>> otherdir = mydir + '\\..\\..'
+
+>>> import os
+>>> otherdir = os.path.join(mydir, '..', '..')
+
+
+    """
+
 strlit = """
 Docstrings are parsed, but cannot be raw,
 so causes havoc with demo of raw strings.
