@@ -10,7 +10,8 @@ class ConverterWindow(QtGui.QMainWindow):
 def create_window(controller, parent=None):
     window = ConverterWindow(parent)
     window.setWindowTitle('Hierarchy Converter')
-    statusbar = window.statusBar()
+    # change this line
+    statusbar = QtGui.QStatusBar()
 
     container = QtGui.QWidget(window)
     label = QtGui.QLabel('Prefix:', container)
@@ -37,6 +38,8 @@ def create_window(controller, parent=None):
     layout.addWidget(textbox)
     layout.addWidget(button)
     window.setCentralWidget(container)
+    # add this line
+    window.setStatusBar(statusbar)
 
     return window
 
