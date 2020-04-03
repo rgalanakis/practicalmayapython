@@ -101,7 +101,7 @@ def test_py_to_helpstrFAIL():
 
 import webbrowser # (1)
 HELP_ROOT_URL = ('http://download.autodesk.com/global/docs/'
-                 'maya2013/en_us/PyMel')# (2)
+                 'maya2013/en_us/Pymel')# (2)
 
 
 def pmhelp(obj): # (3)
