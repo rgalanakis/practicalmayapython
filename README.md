@@ -1,9 +1,15 @@
 practicalmayapython
 ===================
 
-Source code repository for the "Practical Maya Programming with Python" book: 
+Source code repository for the "Practical Maya Programming with Python" book.
 
-http://www.packtpub.com/practical-maya-programming-with-python/book
+You can get an eBook version of the book FREE! Just email me at the email below.
+
+Or you can purchase it at:
+
+- https://www.amazon.com/Practical-Programming-Python-Robert-Galanakis/dp/1849694729
+- http://shop.oreilly.com/product/9781849694728.do
+- https://www.packtpub.com/hardware-and-creative/practical-maya-programming-python
 
 Author Information
 ===
@@ -12,4 +18,4 @@ Name: Rob Galanakis
 
 Email: rob.galanakis@gmail.com
 
-Website: www.robg3d.com
+Website: https://robg3d.com (personal) and https://lithic.tech (business)
